@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>My New Hugo Site</title>
+    <link>https://haoranhe.github.io/</link>
+    <description>Recent content on My New Hugo Site</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 08 Dec 2020 20:22:04 +0800</lastBuildDate><atom:link href="https://haoranhe.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Blog</title>
+      <link>https://haoranhe.github.io/post/blog/</link>
+      <pubDate>Tue, 08 Dec 2020 20:22:04 +0800</pubDate>
+      
+      <guid>https://haoranhe.github.io/post/blog/</guid>
+      <description>mac 终端变慢  sudo rm -f /private/var/log/asl/\*.asl 如何让Finder显示隐藏文件和文件夹  # 显示 defaults write com.apple.finder AppleShowAllFiles -boolean true ; killall Finder # 隐藏 defaults write com.apple.finder AppleShowAllFiles -boolean false ; killall Finder https://sspai.com/post/26273
+brew安装指定版本的软件  https://blog.csdn.net/aa464971/article/details/84860937 https://segmentfault.com/a/1190000015346120</description>
+    </item>
+    
+  </channel>
+</rss>
