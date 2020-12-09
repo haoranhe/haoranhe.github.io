@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="Haoran Blog">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="https://haoranhe.github.io//img/home-bg-jeep.jpg">
+    <meta property="twitter:image" content="https://haoranhe.github.io//img/home-bg-jeep.jpg" />
+    
+
+    
+    <meta name="title" content="利用lnmp&#43;hugo&#43;阿里云服务器搭建个人博客" />
+    <meta property="og:title" content="利用lnmp&#43;hugo&#43;阿里云服务器搭建个人博客" />
+    <meta property="twitter:title" content="利用lnmp&#43;hugo&#43;阿里云服务器搭建个人博客" />
+    
+
+    
+    <meta name="description" content="hugo创建博客; 网站的搭建; vscode远程连接">
+    <meta property="og:description" content="hugo创建博客; 网站的搭建; vscode远程连接" />
+    <meta property="twitter:description" content="hugo创建博客; 网站的搭建; vscode远程连接" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="何浩然, hehaoran, Hehaoran, , 何浩然的网络日志, 何浩然的博客, Hehaoran Blog, 博客, 个人网站, 人工智能, 金融风险管理">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>利用lnmp&#43;hugo&#43;阿里云服务器搭建个人博客-何浩然的博客 | Hehaoran Blog</title>
+
+    <link rel="canonical" href="/2020/12/09/create_hugo_blog/">
+
+    <link rel="stylesheet" href="/css/iDisqus.min.css"/>
+	
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+    
+    
+    <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    
+    
+
+    
+    
+    <script src="/js/jquery.min.js"></script>
+    
+    
+    <script src="/js/bootstrap.min.js"></script>
+    
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    
+
+</head>
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Haoran Blog</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/tech">tech</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/top/books/">BOOKS</a></li>
+                    
+                        <li><a href="/top/about/">ABOUT</a></li>
+                    
+
+                    
+		    <li>
+                        <a href="/search">SEARCH <img src="/img/search.png" height="15" style="cursor: pointer;" alt="Search"></a>
+		    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('https://img.zhaohuabing.com/in-post/istio-traffic-shifting/crossroads.png')
+    }
+</style>
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/hugo" title="hugo">
+                            hugo
+                        </a>
+                        
+                        <a class="tag" href="/tags/ssh" title="ssh">
+                            ssh
+                        </a>
+                        
+                    </div>
+                    <h1>利用lnmp&#43;hugo&#43;阿里云服务器搭建个人博客</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by 
+                        
+                                &#34;hehaoran&#34;
+                         
+                        on 
+                        Wednesday, December 9, 2020
+                        
+                        
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-11 col-lg-offset-1
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <header>
+                    <h2>TOC</h2>
+                </header>
+                <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#引言">引言</a></li>
+        <li><a href="#登陆云服务器">登陆云服务器</a></li>
+        <li><a href="#安装环境">安装环境</a></li>
+        <li><a href="#创建虚拟主机">创建虚拟主机</a></li>
+        <li><a href="#更新与新建博客">更新与新建博客</a></li>
+        <li><a href="#其他">其他</a></li>
+        <li><a href="#参考">参考</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+                
+                <!-- raw HTML omitted -->
+<h2 id="引言">引言</h2>
+<p>在搭建个人博客之前，需要拥有一个云服务器（比如：阿里云、腾讯云、华为云等，这里是阿里云，学生党目前可以白嫖一年，练练手还是很不错的！）和备案解析后的个人域名，并通过阿里云控制台打开服务器 80 端口（也可以简单的使用 github pages + hugo 实现个人博客的搭建，具体的自行百度。这篇博客主要是实现个人域名绑定的博客，github pages 的域名只能是 github 用户名）。然后，​LNMP 动态网站部署架构是一套由 Linux + Nginx + MySQL + PHP 组成的动态网站系统解决方案，具有免费、高效、扩展性强且资源消耗低等优良特性。博客框架常用的有 hexo, hugo, wordpress。最终的效果如本网站所示，操作环境：macOS 10.13.6。在阅读以下内容之前，你需要满足以下条件：</p>
+<ul>
+<li>云服务器</li>
+<li>个人域名</li>
+<li>服务器操作系统 CentOS 7.6 64位</li>
+</ul>
+<h2 id="登陆云服务器">登陆云服务器</h2>
+<p>windows 可以用 putty，如果像我一样是 mac，那么就直接在终端登陆即可:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sudo ssh root@你的公网ip
+</code></pre></div><h2 id="安装环境">安装环境</h2>
+<p>安装LNMP套装，除了LNMP还有LANP、宝塔等等，由于LNMP要下载安装的内容很多，为防止意外中断，所以先安装screen(一路y到底)。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">yum install screen
+screen -S lnmp
+</code></pre></div><p>然后安装LNMP，如果不确定直接默认的就可以了。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">wget http://soft.vpser.net/lnmp/lnmp1.6.tar.gz -cO lnmp1.6.tar.gz <span style="color:#ff79c6">&amp;&amp;</span> tar zxf lnmp1.6.tar.gz <span style="color:#ff79c6">&amp;&amp;</span> <span style="color:#8be9fd;font-style:italic">cd</span> lnmp1.6 <span style="color:#ff79c6">&amp;&amp;</span> ./install.sh lnmp
+</code></pre></div><h2 id="创建虚拟主机">创建虚拟主机</h2>
+<p>一般情况下，一个虚拟主机对应一个网络。运行下面指令，根据提示配置网站信息。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">lnmp vhost add
+</code></pre></div><p>如果配置错误，可以选择删除重建</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">lnmp vhost del //删除虚拟主机
+</code></pre></div><blockquote>
+<p>这里只是删除虚拟主机配置文件，网站文件并不会删除需要自己删除（rm -rf 文件名）。LNMP 1.2 或更高版本下需要执行：chattr -i /网站目录/.user.ini 后才能完整删除网站目录。</p>
+</blockquote>
+<p>配置完成后，回到我们创建的网络目录下，比如:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#8be9fd;font-style:italic">cd</span> /home/wwwroot/hehaoran.cn
+</code></pre></div><p>然后在此文件夹中创建网站文件，这里可以先用hugo创建一个漂亮的个人博客，关于如何运用hugo创建个人博客，自行百度。我们借鉴hugo+github pages的思路，将网站文件放在 github仓库中（实际上只是 hugo 生成的 public 文件夹里面的内容，里面有网页的全部文件，比如 html,css,js，img 等等），在本地完成或修改后，更新git仓库，最后git clone 即可，比如</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">git clone https://github.com/haoranhe/haoranhe.github.io
+</code></pre></div><p>之后，将 clone 文件夹中的文件全部复制到/home/wwwroot/hehaoran.cn 目录下。 当然你也可以直接在云服务器上进行博客的撰写，这里不再赘述。</p>
+<p>最后，运行下面指令，刷新网页即可:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">chown www:www -R /home/wwwroot/hehaoran.cn
+</code></pre></div><h2 id="更新与新建博客">更新与新建博客</h2>
+<p>为适应今后重复的更新与新建博客，可以写一个shell脚本，以下作为参考：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#ff79c6">#! /bin/bash
+</span><span style="color:#ff79c6"></span><span style="color:#6272a4"># if [ ! -x $file ]; chmod +x $file; fi</span>
+
+<span style="color:#8be9fd;font-style:italic">project_path</span><span style="color:#ff79c6">=</span><span style="color:#ff79c6">$(</span><span style="color:#8be9fd;font-style:italic">cd</span> <span style="color:#f1fa8c">`</span>dirname <span style="color:#8be9fd;font-style:italic">$0</span><span style="color:#f1fa8c">`</span>; <span style="color:#8be9fd;font-style:italic">pwd</span><span style="color:#ff79c6">)</span>
+<span style="color:#8be9fd;font-style:italic">readonly</span> <span style="color:#8be9fd;font-style:italic">file</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;/home/wwwroot/www.hehaoran.cn/post_blog.sh&#34;</span>
+<span style="color:#8be9fd;font-style:italic">readonly</span> <span style="color:#8be9fd;font-style:italic">web_root_path</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;/home/wwwroot/www.hehaoran.cn&#34;</span>
+
+<span style="color:#ff79c6">if</span> <span style="color:#8be9fd;font-style:italic">test</span> <span style="color:#8be9fd;font-style:italic">$project_path</span> <span style="color:#ff79c6">==</span> <span style="color:#8be9fd;font-style:italic">$web_root_path</span>
+<span style="color:#ff79c6">then</span>
+    <span style="color:#8be9fd;font-style:italic">cd</span> ./myblog
+    hugo --theme<span style="color:#ff79c6">=</span>hugo-theme-cleanwhite --baseUrl<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;http://hehaoran.cn&#34;</span>
+    <span style="color:#8be9fd;font-style:italic">cd</span> ./public
+    rsync -av --exclude .git/ ./* ../..
+<span style="color:#ff79c6">else</span>
+    <span style="color:#6272a4"># cd /home/wwwroot/www.hehaoran.cn</span>
+    <span style="color:#8be9fd;font-style:italic">echo</span> <span style="color:#f1fa8c">&#34;Warning: your workspaceFolder is not </span><span style="color:#f1fa8c">${</span><span style="color:#8be9fd;font-style:italic">web_root_path</span><span style="color:#f1fa8c">}</span><span style="color:#f1fa8c">!&#34;</span>
+    <span style="color:#8be9fd;font-style:italic">cd</span> <span style="color:#8be9fd;font-style:italic">$web_root_path</span>
+    ./post_blog.sh
+<span style="color:#ff79c6">fi</span>
+</code></pre></div><h2 id="其他">其他</h2>
+<h3 id="如何显示出latex公式">如何显示出latex公式?</h3>
+<p>要在HTML网页中显示数学公式并不是很简单的一件事情。Hugo默认使用的markdown处理后端是Blackfriday，此外也支持使用Mmark。后者是从前者fork而来的。为了避免麻烦的配置，建议在写包含数学公式的博文时使用Mmark。只需要在markdown文件的front matter(即&quot;&mdash;&ldquo;与&rdquo;&mdash;&ldquo;之间)里加上一行：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">markup: mmark
+</code></pre></div><p>Mmark的数学公式全部用两个美元符号包围起来，就像这样 $$ f(x) = \sin(x) $$。行内公式和行间公式都是一样的，区别在于行间公式前后加上一个空行，这样就可以让Mmark自动判断你需要的是行内公式还是行间公式了。行间公式的例子</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-markdown" data-lang="markdown">$$
+f(x) = \sin(x)
+$$
+</code></pre></div><p>在hugo的主题目录里，加上一行代码到你的博文页面一定会包含的文件里即可。一般可以选择加入到themes/hugo-theme-cleanwhite/layouts/partials/footer.html里，这里的hugo-theme-cleanwhite是我使用的hugo主题名称．需要添加的一行代码为：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-html" data-lang="html">&lt;<span style="color:#ff79c6">script</span> <span style="color:#50fa7b">src</span><span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG&#34;</span>&gt;&lt;/<span style="color:#ff79c6">script</span>&gt;
+</code></pre></div><h3 id="vscode远程连接">vscode远程连接</h3>
+<p>每次通过 ssh 登陆服务器都需要输入密码，十分的麻烦。为此，需要借助 ssh密钥对实现自动连接。</p>
+<p>首先在本地生成密钥对</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">ssh-keygen -t rsa -b <span style="color:#bd93f9">4096</span>
+</code></pre></div><blockquote>
+<p>-b 4096 表示生成的 rsa 秘钥对的长度是 4096 个 bit（可选参数）</p>
+</blockquote>
+<p>此时输入你想放入的目录和名字，默认即可。会在～/.ssh 这个目录下生成：id-rsa 和 id-rsa.pub 两个文件，第一个是私钥文件，第二个是公钥文件。</p>
+<p>然后将公钥添加到云服务器上，有两种方法：</p>
+<ul>
+<li>在本地终端通过命令的添加：</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">ssh-copy-id root@host // <span style="color:#6272a4">#后面是用户名root和服务器id</span>
+</code></pre></div><ul>
+<li>手动添加：</li>
+</ul>
+<p>将本地刚生成的公钥文件中的内容添加到 vim /root/.ssh/authorized_keys。（该文件配置了允许连入的客户端的公钥）。</p>
+<p>以上完成后，再修改配置文件：vim /etc/ssh/sshd_config。将PubkeyAuthentication 配置为 yes，从而允许使用基于密钥认证的方式登录。</p>
+<blockquote>
+<p>测试 ssh username@host 是否成功？</p>
+</blockquote>
+<p>最后，回到vscode，先安装remote ssh插件（微软官方的，值得信赖！），并向setting.json中添加&quot;remote.SSH.showLoginTerminal&rdquo;: true（参考中有提到，暂时还不知道有什么作用）。接着设置config文件，config文件编写方式如下：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">Host AliServer
+     HostName 1.1.1.1 <span style="color:#6272a4"># 填写远程服务器的IP或者Host</span>
+     User username <span style="color:#6272a4"># 填写登陆远程服务器的用户的名字</span>
+<span style="color:#6272a4">##注意不要保留注释部分，在连接过程中会报错</span>
+</code></pre></div><h2 id="参考">参考</h2>
+<ul>
+<li>B 站: <a href="https://www.bilibili.com/video/BV1VE41147jU?t=866">https://www.bilibili.com/video/BV1VE41147jU?t=866</a></li>
+<li>hugo 搭建个人博客: <a href="https://www.bilibili.com/video/BV1q4411i7gL">https://www.bilibili.com/video/BV1q4411i7gL</a></li>
+<li>CSDN: <a href="https://blog.csdn.net/sixdaycoder/article/details/89947893">https://blog.csdn.net/sixdaycoder/article/details/89947893</a></li>
+<li>CSDN: <a href="https://blog.csdn.net/maguanzhan7939/article/details/94398745">https://blog.csdn.net/maguanzhan7939/article/details/94398745</a></li>
+<li>CSDN: <a href="https://blog.csdn.net/sixdaycoder/article/details/89850064">https://blog.csdn.net/sixdaycoder/article/details/89850064</a></li>
+<li>latex公式: <a href="https://butui.me/post/yet-best-math-formula-support-for-hugo-with-mathjax">https://butui.me/post/yet-best-math-formula-support-for-hugo-with-mathjax</a></li>
+</ul>
+
+
+                
+                
+<div class="entry-shang text-center">
+    
+	    <p>「真诚赞赏，手留余香」</p>
+	
+	<button class="zs show-zs btn btn-bred">赞赏支持</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+	<div class="zs-modal-head">
+		<button type="button" class="close">×</button>
+		<span class="author"><a href="https://haoranhe.github.io/"><img src="/img/favicon.png" />Haoran Blog</a></span>
+        
+	        <p class="tip"><i></i><span>真诚赞赏，手留余香</span></p>
+		
+ 
+	</div>
+	<div class="zs-modal-body">
+		<div class="zs-modal-btns">
+			<button class="btn btn-blink" data-num="2">2元</button>
+			<button class="btn btn-blink" data-num="5">5元</button>
+			<button class="btn btn-blink" data-num="10">10元</button>
+			<button class="btn btn-blink" data-num="50">50元</button>
+			<button class="btn btn-blink" data-num="100">100元</button>
+			<button class="btn btn-blink" data-num="1">任意金额</button>
+		</div>
+		<div class="zs-modal-pay">
+			<button class="btn btn-bred" id="pay-text">2元</button>
+			<p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+			<img src="/img/reward/wechat-2.png"  id="pay-image"/>
+		</div>
+	</div>
+	<div class="zs-modal-footer">
+		<label><input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked"><span ><span class="zs-wechat"><img src="/img/reward/wechat-btn.png"/></span></label>
+		<label><input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay"><img src="/img/reward/alipay-btn.png"/></span></label>
+	</div>
+</div>
+<script type="text/javascript" src="/js/reward.js"></script>
+
+                
+
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2020/12/08/macos_setting/" data-toggle="tooltip" data-placement="top" title="如何优雅地操作macOS?">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                </ul>
+
+                
+<div id="disqus-comment"></div>
+
+
+
+            </div>
+            
+            <div class="
+                col-lg-11 col-lg-offset-1
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+                <section>
+                    <hr>
+                    <h5>FRIENDS</h5>
+                    <ul class="list-inline">
+                        
+                    </ul>
+                </section>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                   
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="Haoran Blog" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fa fa-circle fa-stack-2x"></i>
+                               <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+                   
+                    
+                    <li>
+                        <a href="mailto:hohaoran@126.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		    
+                    
+                    
+                    <li>
+                        <a href="https://twitter.com/haoranhehe">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                    
+                    
+
+                    
+
+		    
+                    
+                    <li>
+                        <a target="_blank" href="/img/qr.png">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-wechat fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		    
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/haoranhe">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		    
+                    
+                    
+                    
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://stackoverflow.com/users/11784175/hehaoran">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-stack-overflow fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+            
+                    
+                    
+                    
+            
+            
+            
+                </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; Haoran Blog 2020
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+
+
+
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    async("https://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+</body>
+</html>
