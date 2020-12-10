@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>c on Haoran Blog</title>
+    <link>https://haoranhe.github.io/tags/c/</link>
+    <description>Recent content in c on Haoran Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Thu, 10 Dec 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://haoranhe.github.io/tags/c/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>如何理解栈与堆?</title>
+      <link>https://haoranhe.github.io/2020/12/10/stack_heap/</link>
+      <pubDate>Thu, 10 Dec 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://haoranhe.github.io/2020/12/10/stack_heap/</guid>
+      <description>1. 引言 堆(Heap)与栈(Stack)一般情况下, 有两层含义: 程序内存布局场景下, 堆与栈表示的是两种内存管理方式; 数据结构场景下, 堆与栈表示</description>
+    </item>
+    
+  </channel>
+</rss>

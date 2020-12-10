@@ -15,15 +15,15 @@
     
 
     
-    <meta name="title" content="如何优雅地操作linux?" />
-    <meta property="og:title" content="如何优雅地操作linux?" />
-    <meta property="twitter:title" content="如何优雅地操作linux?" />
+    <meta name="title" content="c" />
+    <meta property="og:title" content="c" />
+    <meta property="twitter:title" content="c" />
     
 
     
-    <meta name="description" content="记录linux的一些日常操作">
-    <meta property="og:description" content="记录linux的一些日常操作" />
-    <meta property="twitter:description" content="记录linux的一些日常操作" />
+    <meta name="description" content="何浩然，程序员, 开源爱好者，生活探险家 | 这里是 何浩然 的博客，与你一起发现更大的世界。">
+    <meta property="og:description" content="何浩然，程序员, 开源爱好者，生活探险家 | 这里是 何浩然 的博客，与你一起发现更大的世界。" />
+    <meta property="twitter:description" content="何浩然，程序员, 开源爱好者，生活探险家 | 这里是 何浩然 的博客，与你一起发现更大的世界。" />
     
 
     
@@ -34,9 +34,9 @@
     <meta name="keyword"  content="何浩然, hehaoran, Hehaoran, , 何浩然的网络日志, 何浩然的博客, Hehaoran Blog, 博客, 个人网站, 人工智能, 金融风险管理">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>如何优雅地操作linux?-何浩然的博客 | Hehaoran Blog</title>
+    <title>c-何浩然的博客 | Hehaoran Blog</title>
 
-    <link rel="canonical" href="/2020/12/10/linux_note/">
+    <link rel="canonical" href="/tags/c/">
 
     <link rel="stylesheet" href="/css/iDisqus.min.css"/>
 	
@@ -150,37 +150,14 @@
 
 
 
-
-<style type="text/css">
-    header.intro-header {
-        background-image: url('/img/contact-bg.jpg')
-    }
-</style>
-<header class="intro-header">
+<header class="intro-header" style="background-image: url('/img/home-bg-jeep.jpg')">
     <div class="container">
         <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                <div class="post-heading">
-                    <div class="tags">
-                        
-                        <a class="tag" href="/tags/linux" title="linux">
-                            linux
-                        </a>
-                        
-                    </div>
-                    <h1>如何优雅地操作linux?</h1>
-                    <h2 class="subheading">  &#34;日常积累&#34;</h2>
-                    <span class="meta">
-                        Posted by 
-                        
-                                &#34;hehaoran&#34;
-                         
-                        on 
-                        Thursday, December 10, 2020
-                        
-                        
-                        
-                    </span>
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
+                <div class="site-heading">
+                    <h1>Haoran Blog </h1>
+                    
+		    <span class="subheading">路在脚下，心向远方</span>
                 </div>
             </div>
         </div>
@@ -189,171 +166,186 @@
 
 
 
-
-<article>
-    <div class="container">
-        <div class="row">
-
-            
-            <div class="
-                col-lg-11 col-lg-offset-1
-                col-md-10 col-md-offset-1
-                post-container">
-
-                
-                <header>
-                    <h2>TOC</h2>
-                </header>
-                <nav id="TableOfContents">
-  <ul>
-    <li>
-      <ul>
-        <li><a href="#引言">引言</a></li>
-        <li><a href="#文件操作命令">文件操作命令</a></li>
-        <li><a href="#那些年我们遇到的坑">那些年我们遇到的坑</a></li>
-      </ul>
-    </li>
-  </ul>
-</nav>
-                
-                <!-- raw HTML omitted -->
-<h2 id="引言">引言</h2>
-<p>记录自己日常生活中使用到的 linux 操作（也包括 macOS 系统），方便总结。</p>
-<h2 id="文件操作命令">文件操作命令</h2>
-<ol>
-<li>如何将本地文件或文件夹上传到云服务器上？</li>
-</ol>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">scp -r /Users/hehaoran/myblog root@host:/home/wwwroot/hehaoran.cn/
-<span style="color:#6272a4">## 若仅仅是上传某一个文件，则没有-r参数</span>
-<span style="color:#6272a4">## host是你的公网ip</span>
-</code></pre></div><ol start="2">
-<li>利用 hugo 自动生成博客网页文件</li>
-</ol>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">hugo --theme<span style="color:#ff79c6">=</span>hugo-theme-cleanwhite --baseUrl<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;http://hehaoran.cn&#34;</span>
-</code></pre></div><ol start="3">
-<li>复制文件夹中所有文件，但不包括子目录.git</li>
-</ol>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">rsync -av --exclude .git/ ./* ../
-<span style="color:#6272a4"># 当前目录为目标文件所在的目录</span>
-</code></pre></div><ol start="4">
-<li>复制docker某个文件夹下所有文件到宿主主机(即本机)，比如</li>
-</ol>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#6272a4"># docker cp 容器名(id)：要拷贝的文件在容器里面的路径 要拷贝到宿主机的相应路径</span>
-docker cp -a muxviz:/muxViz-master/export/ ~/
-<span style="color:#6272a4"># 或者反向操作</span>
-<span style="color:#6272a4"># 注：当在容器中运行muxviz时，需要将宿主主机中的配置文件（即txt和edges）复制到docker容器data中</span>
-docker cp -a ~/muxviz/data/interdependent/ muxviz:/muxViz-master/data
-</code></pre></div><h2 id="那些年我们遇到的坑">那些年我们遇到的坑</h2>
-<ol>
-<li>CentOS 系统在~/.bashrc 文件中定义了一些别名，比如 cp = “cp -i”，使得 cp -rf 还是会出现询问是否覆盖的提示。需要在.bashrc 中注释掉。</li>
-</ol>
-
-
-                
-                
-<div class="entry-shang text-center">
-    
-	    <p>「真诚赞赏，手留余香」</p>
-	
-	<button class="zs show-zs btn btn-bred">赞赏支持</button>
-</div>
-<div class="zs-modal-bg"></div>
-<div class="zs-modal-box">
-	<div class="zs-modal-head">
-		<button type="button" class="close">×</button>
-		<span class="author"><a href="https://haoranhe.github.io/"><img src="/img/favicon.png" />Haoran Blog</a></span>
+  
+<div class="container">
+    <div class="row">
         
-	        <p class="tip"><i></i><span>真诚赞赏，手留余香</span></p>
-		
- 
-	</div>
-	<div class="zs-modal-body">
-		<div class="zs-modal-btns">
-			<button class="btn btn-blink" data-num="2">2元</button>
-			<button class="btn btn-blink" data-num="5">5元</button>
-			<button class="btn btn-blink" data-num="10">10元</button>
-			<button class="btn btn-blink" data-num="50">50元</button>
-			<button class="btn btn-blink" data-num="100">100元</button>
-			<button class="btn btn-blink" data-num="1">任意金额</button>
-		</div>
-		<div class="zs-modal-pay">
-			<button class="btn btn-bred" id="pay-text">2元</button>
-			<p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
-			<img src="/img/reward/wechat-2.png"  id="pay-image"/>
-		</div>
-	</div>
-	<div class="zs-modal-footer">
-		<label><input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked"><span ><span class="zs-wechat"><img src="/img/reward/wechat-btn.png"/></span></label>
-		<label><input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay"><img src="/img/reward/alipay-btn.png"/></span></label>
+        
+   	    <div class="
+            col-lg-8 col-lg-offset-1
+            col-md-8 col-md-offset-1
+            col-sm-12
+            col-xs-12
+            post-container
+        ">
+            
+
+<div class="post-preview">
+    <a href="https://haoranhe.github.io/2020/12/10/stack_heap/">
+        <h2 class="post-title">
+            如何理解栈与堆?
+        </h2>
+	
+        <h3 class="post-subtitle">
+              &#34;日常积累&#34;
+        </h3>
+	
+        <div class="post-content-preview">
+	
+            记录linux的一些日常操作
+        
+        </div>
+    </a>
+    <p class="post-meta">
+    Posted by     &#34;hehaoran&#34; Thursday, December 10, 2020
+    
+    
+    </p>
+
+</div>
+<hr>
+
+
+            
+
+
+
+       	</div>
+        
+
+<div class="
+    col-lg-3 col-lg-offset-0
+    col-md-3 col-md-offset-0
+    col-sm-12
+    col-xs-12
+    sidebar-container
+">
+    
+    
+    <section>
+        <hr class="hidden-sm hidden-xs">
+        <h5>FEATURED TAGS</h5>
+        <div class="tags">
+             
+            
+                
+            
+                
+            
+                
+                    <a href="/tags/linux" title="linux">
+                        linux
+                    </a>
+                
+            
+                
+            
+                
+            
+        </div>
+    </section>
+    
+
+    
+	
+    <section class="visible-md visible-lg">
+	<hr><h5><a href="/top/about">ABOUT ME</a></h5>
+        <div class="short-about">
+            
+            <a href="/top/about">
+               <img src="/img/hehaoran.png" alt="avatar" style="cursor: pointer" />
+            </a>
+            
+            
+                <p>Software Developer, Open Source Enthusiast and Dotaer</p>
+            
+           
+           <ul class="list-inline"> 
+               
+               <li>
+                   <a href='/tags/c/index.xml' rel="alternate" type="application/rss+xml" title="Haoran Blog" >
+                       <span class="fa-stack fa-lg">
+                           <i class="fa fa-circle fa-stack-2x"></i>
+                           <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                       </span>
+                   </a>
+               </li>
+               
+               
+               <li>
+                   <a href="https://twitter.com/haoranhehe">
+                       <span class="fa-stack fa-lg">
+                           <i class="fa fa-circle fa-stack-2x"></i>
+                           <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                       </span>
+                   </a>
+               </li>
+               
+               
+               
+               
+               
+               <li>
+                   <a target="_blank" href="/img/qr.png">
+                       <span class="fa-stack fa-lg">
+                           <i class="fa fa-circle fa-stack-2x"></i>
+                           <i class="fa fa-wechat fa-stack-1x fa-inverse"></i>
+                       </span>
+                   </a>
+               </li>
+               
+               
+               <li>
+                   <a target="_blank" href="https://github.com/haoranhe">
+                       <span class="fa-stack fa-lg">
+                           <i class="fa fa-circle fa-stack-2x"></i>
+                           <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                       </span>
+                   </a>
+               </li>
+               
+               
+               
+               
+               
+               
+                    <li>
+                        <a target="_blank" href="https://stackoverflow.com/users/11784175/hehaoran">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-stack-overflow fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+            
+            
+            
+               
+               
+               
+               
+                </ul>
+            </div>
+    </section>
+	
+    
+    
+    <section>
+        <hr class="hidden-sm hidden-xs">
+        <h5>FRIENDS</h5>
+        <ul class="list-inline">
+            
+        </ul>
+    </section>
+    
+
+    
+    
+</div>
+
 	</div>
 </div>
-<script type="text/javascript" src="/js/reward.js"></script>
 
-                
-
-                <hr>
-                <ul class="pager">
-                    
-                    <li class="previous">
-                        <a href="/2020/12/10/stack_heap/" data-toggle="tooltip" data-placement="top" title="如何理解栈与堆?">&larr;
-                            Previous Post</a>
-                    </li>
-                    
-                    
-                </ul>
-
-                
-<div id="disqus-comment"></div>
-
-
-
-            </div>
-            
-            <div class="
-                col-lg-11 col-lg-offset-1
-                col-md-10 col-md-offset-1
-                sidebar-container">
-
-                
-                
-                <section>
-                    <hr class="hidden-sm hidden-xs">
-                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
-                    <div class="tags">
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        <a href="/tags/linux" title="linux">
-                            linux
-                        </a>
-                        
-                        
-                        
-                        
-                        
-                        
-                    </div>
-                </section>
-                
-
-                
-                
-                <section>
-                    <hr>
-                    <h5>FRIENDS</h5>
-                    <ul class="list-inline">
-                        
-                    </ul>
-                </section>
-                
-            </div>
-        </div>
-    </div>
-</article>
 
 
 
@@ -365,7 +357,7 @@ docker cp -a ~/muxviz/data/interdependent/ muxviz:/muxViz-master/data
                 <ul class="list-inline text-center">
                    
                    <li>
-                       <a href='' rel="alternate" type="application/rss+xml" title="Haoran Blog" >
+                       <a href='/tags/c/index.xml' rel="alternate" type="application/rss+xml" title="Haoran Blog" >
                            <span class="fa-stack fa-lg">
                                <i class="fa fa-circle fa-stack-2x"></i>
                                <i class="fa fa-rss fa-stack-1x fa-inverse"></i>

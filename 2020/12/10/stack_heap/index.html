@@ -15,9 +15,9 @@
     
 
     
-    <meta name="title" content="如何优雅地操作linux?" />
-    <meta property="og:title" content="如何优雅地操作linux?" />
-    <meta property="twitter:title" content="如何优雅地操作linux?" />
+    <meta name="title" content="如何理解栈与堆?" />
+    <meta property="og:title" content="如何理解栈与堆?" />
+    <meta property="twitter:title" content="如何理解栈与堆?" />
     
 
     
@@ -34,9 +34,9 @@
     <meta name="keyword"  content="何浩然, hehaoran, Hehaoran, , 何浩然的网络日志, 何浩然的博客, Hehaoran Blog, 博客, 个人网站, 人工智能, 金融风险管理">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>如何优雅地操作linux?-何浩然的博客 | Hehaoran Blog</title>
+    <title>如何理解栈与堆?-何浩然的博客 | Hehaoran Blog</title>
 
-    <link rel="canonical" href="/2020/12/10/linux_note/">
+    <link rel="canonical" href="/2020/12/10/stack_heap/">
 
     <link rel="stylesheet" href="/css/iDisqus.min.css"/>
 	
@@ -167,8 +167,12 @@
                             linux
                         </a>
                         
+                        <a class="tag" href="/tags/c" title="c">
+                            c
+                        </a>
+                        
                     </div>
-                    <h1>如何优雅地操作linux?</h1>
+                    <h1>如何理解栈与堆?</h1>
                     <h2 class="subheading">  &#34;日常积累&#34;</h2>
                     <span class="meta">
                         Posted by 
@@ -208,45 +212,61 @@
   <ul>
     <li>
       <ul>
-        <li><a href="#引言">引言</a></li>
-        <li><a href="#文件操作命令">文件操作命令</a></li>
-        <li><a href="#那些年我们遇到的坑">那些年我们遇到的坑</a></li>
+        <li><a href="#1-引言">1. 引言</a></li>
+        <li><a href="#2-内存分区中的堆与栈">2. 内存分区中的堆与栈</a></li>
+        <li><a href="#其他">其他</a></li>
+        <li><a href="#参考">参考</a></li>
       </ul>
     </li>
   </ul>
 </nav>
                 
                 <!-- raw HTML omitted -->
-<h2 id="引言">引言</h2>
-<p>记录自己日常生活中使用到的 linux 操作（也包括 macOS 系统），方便总结。</p>
-<h2 id="文件操作命令">文件操作命令</h2>
+<h2 id="1-引言">1. 引言</h2>
+<p>堆(Heap)与栈(Stack)一般情况下, 有两层含义:</p>
+<ul>
+<li>程序内存布局场景下, 堆与栈表示的是两种内存管理方式;</li>
+<li>数据结构场景下, 堆与栈表示两种常用的数据结构。</li>
+</ul>
+<h2 id="2-内存分区中的堆与栈">2. 内存分区中的堆与栈</h2>
+<h3 id="21-栈">2.1 栈</h3>
+<p>栈由操作系统自动分配释放, 用于存放函数的参数值、局部变量等, 其操作方式类似于数据结构中的栈.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#8be9fd">int</span> <span style="color:#50fa7b">main</span>(<span style="color:#8be9fd">void</span>)
+{
+    <span style="color:#8be9fd">int</span> n <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1</span>; <span style="color:#6272a4">// 栈
+</span><span style="color:#6272a4"></span>    <span style="color:#8be9fd">char</span> ch <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#39;a&#39;</span>; <span style="color:#6272a4">// 栈
+</span><span style="color:#6272a4"></span>    <span style="color:#8be9fd">char</span> str <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#34;abc&#34;</span>; <span style="color:#6272a4">// 栈
+</span><span style="color:#6272a4"></span>    <span style="color:#8be9fd">float</span> pi <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">3.14</span>; <span style="color:#6272a4">// 栈
+</span><span style="color:#6272a4"></span>}
+</code></pre></div><p>其中函数中定义的局部变量按照先后定义的顺序依次压入栈中, 也就是说相邻变量的地址之间不会存在其它变量. 栈的内存地址生长方向与堆相反, 由高到底, 所以后定义的变量地址低于先定义的变量, 比如上面代码中变量ch的地址小于变量n的地址. 栈中存储的数据的生命周期随着函数的执行完成而结束.</p>
+<h3 id="22-堆">2.2 堆</h3>
+<p>堆是一种常用的树形结构, 是一种特殊的完全二叉树, 当且仅当满足所有节点的值总是不大于或不小于其父节点的值的完全二叉树被称之为堆. 堆的这一特性称之为堆序性. 因此, 在一个堆中, 根节点是最大(或最小)节点. 如果根节点最小, 称之为小顶堆(或小根堆), 如果根节点最大, 称之为大顶堆(或大根堆).</p>
+<p>堆由程序员分配释放(比如: malloc,realloc,free), 若程序员不释放, 程序结束时由OS回收, 分配方式倒是类似于链表.</p>
+<blockquote>
+<p>关于堆上内存空间的分配过程，首先应该知道操作系统有一个记录空闲内存地址的链表，当系统收到程序的申请时，会遍历该链表，寻找第一个空间大于所申请空间的堆结点，然后将该结点从空闲结点链表中删除，并将该结点的空间分配给程序，另外，对于大多数系统，会在这块内存空间中的首地址处记录本次分配的大小，这样，代码中的delete语句才能正确的释放本内存空间。另外，由于找到的堆结点的大小不一定正好等于申请的大小，系统会自动的将多余的那部分重新放入空闲链表中。</p>
+</blockquote>
+<h3 id="23-栈与堆的区别">2.3 栈与堆的区别</h3>
+<p>堆与栈实际上是操作系统对进程占用的内存空间的两种管理方式，主要有如下几种区别:</p>
+<ul>
+<li>管理方式不同。栈由操作系统自动分配释放，无需我们手动控制;堆的申请和释放工作由程序员控制，容易产生内存泄漏</li>
+<li>空间大小不同。每个进程拥有的栈的大小要远远小于堆的大小。理论上，程序员可申请的堆大小为虚拟内存的大小，进程栈的大小64bits的Windows默认1M，64bits的Linux默认10M;</li>
+<li>生长方向不同。堆的生长方向向上，内存地址由低到高;栈的生长方向向下，内存地址由高到低。</li>
+<li>分配方式不同。堆都是动态分配的，没有静态分配的堆。栈有2种分配方式：静态分配和动态分配。静态分配是由操作系统完成的，比如局部变量的分配。动态分配由alloca函数进行分配，但是栈的动态分配和堆是不同的，他的动态分配是由操作系统进行释放，无需我们手工实现。</li>
+<li>分配效率不同。栈由操作系统自动分配，会在硬件层级对栈提供支持：分配专门的寄存器存放栈的地址，压栈出栈都有专门的指令执行，这就决定了栈的效率比较高。堆则是由C/C++提供的库函数或运算符来完成申请与管理，实现机制较为复杂，频繁的内存申请容易产生内存碎片。显然，堆的效率比栈要低得多。</li>
+<li>存放内容不同。栈存放的内容，函数返回地址、相关参数、局部变量和寄存器内容等。当主函数调用另外一个函数的时候，要对当前函数执行断点进行保存，需要使用栈来实现，首先入栈的是主函数下一条语句的地址，即扩展指针寄存器的内存（eip），然后是当前栈帧的底部地址，即扩展基址指针寄存器内容（ebp），再然后是被调函数的实参等，一般情况下是按照从右向左的顺序入栈，之后是调用函数的局部变量，注意静态变量是存放在数据段或者BSS段，是不入栈的。出栈的顺序正好相反，最终栈顶指向主函数下一条语句的地址，主程序又从该地址开始执行。堆，一般情况堆顶使用一个字节的空间来存放堆的大小，而堆中具体存放内容是由程序员来填充的。</li>
+</ul>
+<h2 id="其他">其他</h2>
+<p>C语言的内存模型分为5个区：栈区、堆区、静态区、常量区、代码区:</p>
 <ol>
-<li>如何将本地文件或文件夹上传到云服务器上？</li>
+<li>栈区：存放函数的参数值、局部变量等，由编译器自动分配和释放，通常在函数执行完后就释放了，其操作方式类似于数据结构中的栈。栈内存分配运算内置于CPU的指令集，效率很高，但是分配的内存量有限，比如iOS中栈区的大小是2M。</li>
+<li>堆区：就是通过new、malloc、realloc分配的内存块，编译器不会负责它们的释放工作，需要用程序区释放。分配方式类似于数据结构中的链表。在iOS开发中所说的“内存泄漏”说的就是堆区的内存。</li>
+<li>静态区：全局变量和静态变量（在iOS中就是用static修饰的局部变量或者是全局全局变量）的存储是放在一块的，初始化的全局变量和静态变量在一块区域，未初始化的全局变量和未初始化的静态变量在相邻的另一块区域。程序结束后，由系统释放。</li>
+<li>常量区：常量存储在这里，不允许修改。</li>
+<li>代码区：存放函数体的二进制代码。</li>
 </ol>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">scp -r /Users/hehaoran/myblog root@host:/home/wwwroot/hehaoran.cn/
-<span style="color:#6272a4">## 若仅仅是上传某一个文件，则没有-r参数</span>
-<span style="color:#6272a4">## host是你的公网ip</span>
-</code></pre></div><ol start="2">
-<li>利用 hugo 自动生成博客网页文件</li>
-</ol>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">hugo --theme<span style="color:#ff79c6">=</span>hugo-theme-cleanwhite --baseUrl<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;http://hehaoran.cn&#34;</span>
-</code></pre></div><ol start="3">
-<li>复制文件夹中所有文件，但不包括子目录.git</li>
-</ol>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">rsync -av --exclude .git/ ./* ../
-<span style="color:#6272a4"># 当前目录为目标文件所在的目录</span>
-</code></pre></div><ol start="4">
-<li>复制docker某个文件夹下所有文件到宿主主机(即本机)，比如</li>
-</ol>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#6272a4"># docker cp 容器名(id)：要拷贝的文件在容器里面的路径 要拷贝到宿主机的相应路径</span>
-docker cp -a muxviz:/muxViz-master/export/ ~/
-<span style="color:#6272a4"># 或者反向操作</span>
-<span style="color:#6272a4"># 注：当在容器中运行muxviz时，需要将宿主主机中的配置文件（即txt和edges）复制到docker容器data中</span>
-docker cp -a ~/muxviz/data/interdependent/ muxviz:/muxViz-master/data
-</code></pre></div><h2 id="那些年我们遇到的坑">那些年我们遇到的坑</h2>
-<ol>
-<li>CentOS 系统在~/.bashrc 文件中定义了一些别名，比如 cp = “cp -i”，使得 cp -rf 还是会出现询问是否覆盖的提示。需要在.bashrc 中注释掉。</li>
-</ol>
+<h2 id="参考">参考</h2>
+<p>CSDN: <a href="https://blog.csdn.net/ZHUO_SIR/article/details/80998631">https://blog.csdn.net/ZHUO_SIR/article/details/80998631</a>
+博客园: <a href="https://www.cnblogs.com/cchHers/p/10010275.html">https://www.cnblogs.com/cchHers/p/10010275.html</a></p>
 
 
                 
@@ -295,10 +315,15 @@ docker cp -a ~/muxviz/data/interdependent/ muxviz:/muxViz-master/data
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2020/12/10/stack_heap/" data-toggle="tooltip" data-placement="top" title="如何理解栈与堆?">&larr;
+                        <a href="/2020/12/09/create_hugo_blog/" data-toggle="tooltip" data-placement="top" title="利用lnmp&#43;hugo&#43;阿里云服务器搭建个人博客">&larr;
                             Previous Post</a>
                     </li>
                     
+                    
+                    <li class="next">
+                        <a href="/2020/12/10/linux_note/" data-toggle="tooltip" data-placement="top" title="如何优雅地操作linux?">Next
+                            Post &rarr;</a>
+                    </li>
                     
                 </ul>
 

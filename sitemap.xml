@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://haoranhe.github.io/tags/c/</loc>
+    <lastmod>2020-12-10T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://haoranhe.github.io/categories/</loc>
     <lastmod>2020-12-10T00:00:00+00:00</lastmod>
   </url>
@@ -34,6 +39,11 @@
   
   <url>
     <loc>https://haoranhe.github.io/2020/12/10/linux_note/</loc>
+    <lastmod>2020-12-10T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://haoranhe.github.io/2020/12/10/stack_heap/</loc>
     <lastmod>2020-12-10T00:00:00+00:00</lastmod>
   </url>
   

@@ -17,6 +17,15 @@
     </item>
     
     <item>
+      <title>如何理解栈与堆?</title>
+      <link>https://haoranhe.github.io/2020/12/10/stack_heap/</link>
+      <pubDate>Thu, 10 Dec 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://haoranhe.github.io/2020/12/10/stack_heap/</guid>
+      <description>1. 引言 堆(Heap)与栈(Stack)一般情况下, 有两层含义: 程序内存布局场景下, 堆与栈表示的是两种内存管理方式; 数据结构场景下, 堆与栈表示</description>
+    </item>
+    
+    <item>
       <title>利用lnmp&#43;hugo&#43;阿里云服务器搭建个人博客</title>
       <link>https://haoranhe.github.io/2020/12/09/create_hugo_blog/</link>
       <pubDate>Wed, 09 Dec 2020 00:00:00 +0000</pubDate>
