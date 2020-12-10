@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+    <meta property="og:site_name" content="Haoran Blog">
+    <meta property="og:type" content="article">
+
+    
+    <meta property="og:image" content="http://hehaoran.cn/img/home-bg-jeep.jpg">
+    <meta property="twitter:image" content="http://hehaoran.cn/img/home-bg-jeep.jpg" />
+    
+
+    
+    <meta name="title" content="多层网络的数学表示方法与实现(3)" />
+    <meta property="og:title" content="多层网络的数学表示方法与实现(3)" />
+    <meta property="twitter:title" content="多层网络的数学表示方法与实现(3)" />
+    
+
+    
+    <meta name="description" content="通过张量的形式表示多层网络以及相关的网络分析">
+    <meta property="og:description" content="通过张量的形式表示多层网络以及相关的网络分析" />
+    <meta property="twitter:description" content="通过张量的形式表示多层网络以及相关的网络分析" />
+    
+
+    
+    <meta property="twitter:card" content="summary" />
+    
+    
+
+    <meta name="keyword"  content="何浩然, hehaoran, Hehaoran, 何浩然的博客, Hehaoran Blog, Dota2">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>多层网络的数学表示方法与实现(3)-何浩然的博客 | Hehaoran Blog</title>
+
+    <link rel="canonical" href="/2020/07/06/Mathematical_Formulation_Multilayer_Networks3/">
+
+    <link rel="stylesheet" href="/css/iDisqus.min.css"/>
+	
+    
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    
+    <link rel="stylesheet" href="/css/hux-blog.min.css">
+
+    
+    <link rel="stylesheet" href="/css/zanshang.css">
+    
+    
+    <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    
+    
+
+    
+    
+    <script src="/js/jquery.min.js"></script>
+    
+    
+    <script src="/js/bootstrap.min.js"></script>
+    
+    
+    <script src="/js/hux-blog.min.js"></script>
+
+    
+    
+
+</head>
+
+
+
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Haoran Blog</a>
+        </div>
+
+        
+        
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+                    
+                        
+                        <li>
+                            <a href="/categories/tech">tech</a>
+                        </li>
+                        
+                    
+                    
+		    
+                        <li><a href="/top/books/">BOOKS</a></li>
+                    
+                        <li><a href="/top/about/">ABOUT</a></li>
+                    
+
+                    
+		    <li>
+                        <a href="/search">SEARCH <img src="/img/search.png" height="15" style="cursor: pointer;" alt="Search"></a>
+		    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+    
+</nav>
+<script>
+    
+    
+    
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        
+            $navbar.className = " ";
+            
+            setTimeout(function(){
+                
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+
+
+<style type="text/css">
+    header.intro-header {
+        background-image: url('/img/buffalo.jpg')
+    }
+</style>
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/network" title="network">
+                            network
+                        </a>
+                        
+                        <a class="tag" href="/tags/tensor" title="tensor">
+                            tensor
+                        </a>
+                        
+                    </div>
+                    <h1>多层网络的数学表示方法与实现(3)</h1>
+                    <h2 class="subheading"></h2>
+                    <span class="meta">
+                        Posted by 
+                        
+                            hehaoran
+                         
+                        on 
+                        Tuesday, July 7, 2020
+                        
+                        
+                        
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+
+<article>
+    <div class="container">
+        <div class="row">
+
+            
+            <div class="
+                col-lg-11 col-lg-offset-1
+                col-md-10 col-md-offset-1
+                post-container">
+
+                
+                <header>
+                    <h2>TOC</h2>
+                </header>
+                
+                
+                <!-- markdownlint-disable MD033 MD026-->
+
+<h2 id="引言">引言</h2>
+
+<p>在<a href="http://hehaoran.cn/2020/07/04/mathematical_formulation_multilayer_networks/">第一篇</a>中我们实现了单层网络中网络分析的数学表达，并在<a href="http://hehaoran.cn/2020/07/05/mathematical_formulation_multilayer_networks2/">第二篇</a>中介绍了多层网络中的张量代数运算。在这篇博文里面我们将具体实现多层网络中的网络分析。写到这里我不由得感叹这篇<a href="https://journals.aps.org/prx/abstract/10.1103/PhysRevX.3.041022">文献</a>，写得真的太好，精读之后收获颇多。</p>
+
+<p>我们可以随机生成一个任意层数和顶点数的多层网络，如下：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#6272a4">#定义层数</span>
+L <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">5</span>
+<span style="color:#6272a4"># 定义节点数 (在现实中各层的节点数不一定都相等，</span>
+<span style="color:#6272a4"># 但是我们可以通过补点的方法，让各层的顶点数相同。</span>
+<span style="color:#6272a4"># 当然补上的顶点与其他顶点没有任何连接，只是为了方便后面的分析。</span>
+<span style="color:#6272a4"># 还需要说明的是，即使某一层某一顶点与其他顶点都没有连接，但它仍可以通过其他层与其他顶点连接)</span>
+N <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">10</span>
+<span style="color:#6272a4"># 节点i,j在l层存在边的概率(层内)</span>
+p1 <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0.4</span>
+<span style="color:#6272a4"># k层顶i与l层顶点j存在边的概率(层间)</span>
+p2 <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0.1</span>
+<span style="color:#6272a4"># 权重大小</span>
+w <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">5</span>
+<span style="color:#6272a4"># 随机生成一个多层网络M</span>
+<span style="color:#ff79c6">def</span> <span style="color:#50fa7b">createRandomMultiNetwork</span>(<span style="color:#8be9fd;font-style:italic">type</span>, N, L, p1<span style="color:#ff79c6">=</span><span style="color:#bd93f9">0.4</span>, p2<span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0.1</span>, w<span style="color:#ff79c6">=</span>None, verbose<span style="color:#ff79c6">=</span>True):
+  M <span style="color:#ff79c6">=</span> np<span style="color:#ff79c6">.</span>zeros((N,N,L,L))
+  <span style="color:#ff79c6">if</span> <span style="color:#f1fa8c">&#39;w&#39;</span> <span style="color:#ff79c6">in</span> <span style="color:#8be9fd;font-style:italic">type</span>: <span style="color:#ff79c6">assert</span> w, <span style="color:#f1fa8c">&#34;Error: &#39;w&#39; cannot be empty!&#34;</span>
+  <span style="color:#ff79c6">for</span> k <span style="color:#ff79c6">in</span> <span style="color:#8be9fd;font-style:italic">range</span>(L):
+    <span style="color:#ff79c6">for</span> l <span style="color:#ff79c6">in</span> <span style="color:#8be9fd;font-style:italic">range</span>(L):
+      <span style="color:#ff79c6">for</span> i <span style="color:#ff79c6">in</span> <span style="color:#8be9fd;font-style:italic">range</span>(N):
+        <span style="color:#ff79c6">for</span> j <span style="color:#ff79c6">in</span> <span style="color:#8be9fd;font-style:italic">range</span>(N):
+          <span style="color:#6272a4"># 判断是否为同层</span>
+          <span style="color:#ff79c6">if</span> k <span style="color:#ff79c6">==</span> l <span style="color:#ff79c6">and</span> np<span style="color:#ff79c6">.</span>random<span style="color:#ff79c6">.</span>rand() <span style="color:#ff79c6">&lt;</span> p1:
+            <span style="color:#6272a4"># 这里我们不允许同层同顶点之间的连接(即不存在自环)</span>
+            <span style="color:#ff79c6">if</span> i <span style="color:#ff79c6">!=</span> j <span style="color:#ff79c6">and</span> <span style="color:#8be9fd;font-style:italic">type</span> <span style="color:#ff79c6">==</span> <span style="color:#f1fa8c">&#39;uu&#39;</span>:
+              M[i][j][k][l] <span style="color:#ff79c6">=</span> M[j][i][k][l] <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1</span>
+            <span style="color:#ff79c6">elif</span> i <span style="color:#ff79c6">!=</span> j <span style="color:#ff79c6">and</span> <span style="color:#8be9fd;font-style:italic">type</span> <span style="color:#ff79c6">==</span> <span style="color:#f1fa8c">&#39;du&#39;</span>:
+              M[i][j][k][l] <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1</span>
+            <span style="color:#ff79c6">elif</span> i <span style="color:#ff79c6">!=</span> j <span style="color:#ff79c6">and</span> <span style="color:#8be9fd;font-style:italic">type</span> <span style="color:#ff79c6">==</span> <span style="color:#f1fa8c">&#39;uw&#39;</span>:
+              M[i][j][k][l] <span style="color:#ff79c6">=</span> M[j][i][k][l] <span style="color:#ff79c6">=</span> np<span style="color:#ff79c6">.</span>random<span style="color:#ff79c6">.</span>randint(w)
+            <span style="color:#ff79c6">elif</span> i <span style="color:#ff79c6">!=</span> j <span style="color:#ff79c6">and</span> <span style="color:#8be9fd;font-style:italic">type</span> <span style="color:#ff79c6">==</span> <span style="color:#f1fa8c">&#39;dw&#39;</span>:
+              M[i][j][k][l] <span style="color:#ff79c6">=</span> np<span style="color:#ff79c6">.</span>random<span style="color:#ff79c6">.</span>randint(w)
+          <span style="color:#ff79c6">elif</span> k <span style="color:#ff79c6">!=</span> l <span style="color:#ff79c6">and</span> np<span style="color:#ff79c6">.</span>random<span style="color:#ff79c6">.</span>rand() <span style="color:#ff79c6">&lt;</span> p2:
+            <span style="color:#6272a4"># 这里我们允许不同层相同顶点之间的连接</span>
+            <span style="color:#ff79c6">if</span> <span style="color:#8be9fd;font-style:italic">type</span> <span style="color:#ff79c6">==</span> <span style="color:#f1fa8c">&#39;uu&#39;</span>:
+              M[i][j][k][l] <span style="color:#ff79c6">=</span> M[j][i][k][l] <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1</span>
+            <span style="color:#ff79c6">elif</span> <span style="color:#8be9fd;font-style:italic">type</span> <span style="color:#ff79c6">==</span> <span style="color:#f1fa8c">&#39;du&#39;</span>:
+              M[i][j][k][l] <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1</span>
+            <span style="color:#ff79c6">elif</span> <span style="color:#8be9fd;font-style:italic">type</span> <span style="color:#ff79c6">==</span> <span style="color:#f1fa8c">&#39;uw&#39;</span>:
+              M[i][j][k][l] <span style="color:#ff79c6">=</span> M[j][i][k][l] <span style="color:#ff79c6">=</span> np<span style="color:#ff79c6">.</span>random<span style="color:#ff79c6">.</span>randint(w)
+            <span style="color:#ff79c6">elif</span> <span style="color:#8be9fd;font-style:italic">type</span> <span style="color:#ff79c6">==</span> <span style="color:#f1fa8c">&#39;dw&#39;</span>:
+              M[i][j][k][l] <span style="color:#ff79c6">=</span> np<span style="color:#ff79c6">.</span>random<span style="color:#ff79c6">.</span>randint(w)
+          <span style="color:#ff79c6">else</span>:
+            <span style="color:#6272a4"># 不存在边的顶点对</span>
+            <span style="color:#ff79c6">if</span> <span style="color:#ff79c6">not</span> verbose:
+              <span style="color:#ff79c6">print</span>(<span style="color:#f1fa8c">&#39;i,j,k,l = &#39;</span>, i, j, k, l)
+  <span style="color:#ff79c6">return</span> M
+
+<span style="color:#6272a4"># 获得具体某一层的2阶正交基张量</span>
+<span style="color:#ff79c6">def</span> <span style="color:#50fa7b">ct</span>(d, rank):
+  <span style="color:#f1fa8c">&#34;&#34;&#34;
+</span><span style="color:#f1fa8c">  ct = canonical tensor
+</span><span style="color:#f1fa8c">  &#34;&#34;&#34;</span>
+  E <span style="color:#ff79c6">=</span> np<span style="color:#ff79c6">.</span>zeros((rank,rank))
+  E[d][d] <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1</span>
+  <span style="color:#ff79c6">return</span> E
+
+<span style="color:#6272a4"># a function that selects the cycles</span>
+<span style="color:#ff79c6">def</span> <span style="color:#50fa7b">sc</span>(h,k,l,num_layer):
+  <span style="color:#ff79c6">assert</span> h <span style="color:#ff79c6">&lt;</span> num_layer <span style="color:#ff79c6">and</span> k <span style="color:#ff79c6">&lt;</span> num_laye <span style="color:#ff79c6">and</span> l <span style="color:#ff79c6">&lt;</span> num_layer
+  kron_delta <span style="color:#ff79c6">=</span> np<span style="color:#ff79c6">.</span>eye(num_layer)
+  <span style="color:#ff79c6">return</span> np<span style="color:#ff79c6">.</span>array([kron_delta[h][l]<span style="color:#ff79c6">*</span>kron_delta[h][k]<span style="color:#ff79c6">*</span>kron_delta[k][l], (<span style="color:#bd93f9">1</span><span style="color:#ff79c6">-</span>kron_delta[h][l])<span style="color:#ff79c6">*</span>kron_delta[h][k]<span style="color:#ff79c6">+</span>(<span style="color:#bd93f9">1</span><span style="color:#ff79c6">-</span>kron_delta[k][l])<span style="color:#ff79c6">*</span>kron_delta[h][k]<span style="color:#ff79c6">+</span>(<span style="color:#bd93f9">1</span><span style="color:#ff79c6">-</span>kron_delta[h][k])<span style="color:#ff79c6">*</span>kron_delta[k][l],(<span style="color:#bd93f9">1</span><span style="color:#ff79c6">-</span>kron_delta[h][l])<span style="color:#ff79c6">*</span>(<span style="color:#bd93f9">1</span><span style="color:#ff79c6">-</span>kron_delta[k][l])<span style="color:#ff79c6">*</span>(<span style="color:#bd93f9">1</span><span style="color:#ff79c6">-</span>kron_delta[h][k])])</code></pre></div>
+<p>当然，我们也可以从现实世界中构建多层网络。为此，可以采用张量折叠（unfolding）的方法将层内和层间的2阶张量（矩阵）折叠为一个4阶张量。具体来说，我们知道，4阶张量按模态1（mode-1）展开可以表示为：</p>
+
+<p><span  class="math">\[
+\chi_{(1)}=[\chi(:,:,1,1),\chi(:,:,2,1),...,\chi(:,:,N,1),\chi(:,:,1,2),\chi(2,2),...\chi(:,:,N,N)]
+\]</span></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#6272a4"># 假设层内与层间的邻接矩阵为mat1,mat2,...,分别对于上面公式</span>
+<span style="color:#6272a4"># 假设是2*2*2*2，则</span>
+mod1 <span style="color:#ff79c6">=</span> np<span style="color:#ff79c6">.</span>concatenate((mat1,mat2,mat3,mat4), axis<span style="color:#ff79c6">=</span><span style="color:#bd93f9">1</span>)
+M <span style="color:#ff79c6">=</span> mat2ten(mod1, np<span style="color:#ff79c6">.</span>array([<span style="color:#bd93f9">2</span>, <span style="color:#bd93f9">2</span>, <span style="color:#bd93f9">2</span>, <span style="color:#bd93f9">2</span>]), <span style="color:#bd93f9">0</span>)</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">ten2mat</span>(t, mode):
+    <span style="color:#f1fa8c">&#34;&#34;&#34;
+</span><span style="color:#f1fa8c">    a tensor unfolding
+</span><span style="color:#f1fa8c">
+</span><span style="color:#f1fa8c">    Parameters:
+</span><span style="color:#f1fa8c">    ---
+</span><span style="color:#f1fa8c">    `t`: a tensor object
+</span><span style="color:#f1fa8c">
+</span><span style="color:#f1fa8c">    `mode`: &lt;int&gt; 1-mode = 0, 2-mode = 1,...
+</span><span style="color:#f1fa8c">    &#34;&#34;&#34;</span>
+    <span style="color:#ff79c6">return</span> np<span style="color:#ff79c6">.</span>reshape(np<span style="color:#ff79c6">.</span>moveaxis(t, mode, <span style="color:#bd93f9">0</span>), (t<span style="color:#ff79c6">.</span>shape[mode], <span style="color:#ff79c6">-</span><span style="color:#bd93f9">1</span>), order <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#39;F&#39;</span>)
+
+<span style="color:#ff79c6">def</span> <span style="color:#50fa7b">mat2ten</span>(mat, tensor_size, mode):
+    <span style="color:#f1fa8c">&#34;&#34;&#34;
+</span><span style="color:#f1fa8c">    Examples
+</span><span style="color:#f1fa8c">    ---
+</span><span style="color:#f1fa8c">    &gt;X = np.array(
+</span><span style="color:#f1fa8c">        [[[1, 2, 3, 4], [3, 4, 5, 6]],
+</span><span style="color:#f1fa8c">        [[5, 6, 7, 8], [7, 8, 9, 10]],
+</span><span style="color:#f1fa8c">        [[9, 10, 11, 12], [11, 12, 13, 14]]])
+</span><span style="color:#f1fa8c">    &gt;print(&#39;mode-1 tensor unfolding:&#39;)
+</span><span style="color:#f1fa8c">    &gt;print(ten2mat(X, 0))
+</span><span style="color:#f1fa8c">    &gt;print(&#39;mode-1 tensor folding:&#39;)
+</span><span style="color:#f1fa8c">    &gt;print(mat2ten(ten2mat(X, 0), np.array([3, 2, 4]), 0))
+</span><span style="color:#f1fa8c">    &#34;&#34;&#34;</span>
+    index <span style="color:#ff79c6">=</span> <span style="color:#8be9fd;font-style:italic">list</span>()
+    index<span style="color:#ff79c6">.</span>append(mode)
+    <span style="color:#ff79c6">for</span> i <span style="color:#ff79c6">in</span> <span style="color:#8be9fd;font-style:italic">range</span>(tensor_size<span style="color:#ff79c6">.</span>shape[<span style="color:#bd93f9">0</span>]):
+        <span style="color:#ff79c6">if</span> i <span style="color:#ff79c6">!=</span> mode:
+            index<span style="color:#ff79c6">.</span>append(i)
+    <span style="color:#ff79c6">return</span> np<span style="color:#ff79c6">.</span>moveaxis(np<span style="color:#ff79c6">.</span>reshape(mat, <span style="color:#8be9fd;font-style:italic">list</span>(tensor_size[index]), order <span style="color:#ff79c6">=</span> <span style="color:#f1fa8c">&#39;F&#39;</span>), <span style="color:#bd93f9">0</span>, mode)</code></pre></div>
+<h2 id="2-度中心性degree-centrality">2. 度中心性（Degree centrality）</h2>
+
+<p>We obtain a multidegree centrality vector</p>
+
+<p><span  class="math">\[
+K^{\alpha}=M_{\beta\tilde{\delta}}^{\alpha\tilde{\gamma}}U_{\tilde{\gamma}}^{\tilde{\delta}}u^{\beta}\tag{2.1}
+\]</span></p>
+
+<p>the above equation is equal to:</p>
+
+<p><span  class="math">\[
+K^{\alpha}=\sum_{\tilde{h},\tilde{k}=1}^{L}k^{\alpha}(\tilde{h}\tilde{k})\tag{2.2}
+\]</span></p>
+
+<p>where <span  class="math">\( k^{\alpha}(\tilde{h}\tilde{k}) \)</span> is the degree centrality vector that corresponds to connections between layers <span  class="math">\( \tilde{h}, \tilde{k} \)</span>.
+The definitions of mean degree, second moment, and variance are analogous to the corresponding monoplex-network counterparts, except that one uses <span  class="math">\( K^{\alpha} \)</span>instead of <span  class="math">\( k^{\alpha} \)</span>.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">U <span style="color:#ff79c6">=</span> np<span style="color:#ff79c6">.</span>einsum(<span style="color:#f1fa8c">&#39;i,j-&gt;ij&#39;</span>, np<span style="color:#ff79c6">.</span>ones(L), np<span style="color:#ff79c6">.</span>ones(L))
+M <span style="color:#ff79c6">=</span> tn<span style="color:#ff79c6">.</span>createRandomMultiNetwork(<span style="color:#f1fa8c">&#39;uu&#39;</span>)
+<span style="color:#6272a4"># 注：index按照一上一下的原则</span>
+K <span style="color:#ff79c6">=</span> np<span style="color:#ff79c6">.</span>einsum(<span style="color:#f1fa8c">&#39;ijkl,kl,j&#39;</span>, M, U, u_con)</code></pre></div>
+<h2 id="3聚集系数clustering-coefficients">3.聚集系数（Clustering coefficients）</h2>
+
+<p>For multilayer networks, the triangles can be closed using intralayer connections from <strong>different layers</strong>. We define a global clustering coefficient on a multilayer adjacency tensor by generalizing Eq. (3.3) in <a href="http://hehaoran.cn/2020/07/04/mathematical_formulation_multilayer_networks/">here</a> for fourth-order tensors:</p>
+
+<p><span  class="math">\[
+c(M_{\beta\tilde{\delta}}^{\alpha\tilde{\gamma}})=\mathcal{N}^{-1}\frac{M_{\beta\tilde{\delta}}^{\alpha\tilde{\gamma}}M_{\epsilon\tilde{\eta}}^{\beta\tilde{\delta}}M_{\alpha\tilde{\gamma}}^{\epsilon\tilde{\eta}}}{M_{\beta\tilde{\delta}}^{\alpha\tilde{\gamma}}F_{\epsilon\tilde{\eta}}^{\beta\tilde{\delta}}M_{\alpha\tilde{\gamma}}^{\epsilon\tilde{\eta}}}\tag{3.1}
+\]</span></p>
+
+<p>where we again define <span  class="math">\( F_{\epsilon\tilde{\eta}}^{\beta\tilde{\delta}}=U_{\epsilon\tilde{\eta}}^{\beta\tilde{\delta}}-\delta_{\epsilon\tilde{\eta}}^{\beta\tilde{\delta}} \)</span> as the adjacency tensor of a complete multilayer network (without self-edges). The choice of the normalization factor <span  class="math">\( \mathcal{N} \)</span> is again arbitrary, but the choice <span  class="math">\( \mathcal{N}=\max_{\alpha,\beta,\tilde{\gamma},\tilde{\delta}}\left\{M_{\beta\tilde{\delta}}^{\alpha\tilde{\gamma}}\right\} \)</span> ensures that Eq. (3.1) is well defined for both weighted and unweighted multilayer networks.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">U <span style="color:#ff79c6">=</span> np<span style="color:#ff79c6">.</span>einsum(<span style="color:#f1fa8c">&#39;i,j,k,l-&gt;ijkl&#39;</span>, np<span style="color:#ff79c6">.</span>ones(N), np<span style="color:#ff79c6">.</span>ones(N), np<span style="color:#ff79c6">.</span>ones(L), np<span style="color:#ff79c6">.</span>ones(L))
+<span style="color:#6272a4"># 同层同顶点等于1，其他都等于0,即层L=L，顶点N=N</span>
+kron_delta <span style="color:#ff79c6">=</span> np<span style="color:#ff79c6">.</span>einsum(<span style="color:#f1fa8c">&#39;ij,kl-&gt;ijkl&#39;</span>, np<span style="color:#ff79c6">.</span>eye(N), np<span style="color:#ff79c6">.</span>eye(L))
+F <span style="color:#ff79c6">=</span> U <span style="color:#ff79c6">-</span> kron_delta
+M_max <span style="color:#ff79c6">=</span> np<span style="color:#ff79c6">.</span>max(M)
+c <span style="color:#ff79c6">=</span> np<span style="color:#ff79c6">.</span>einsum(<span style="color:#f1fa8c">&#39;ijkl,jmln,mink&#39;</span>, M, M, M) <span style="color:#ff79c6">/</span> np<span style="color:#ff79c6">.</span>einsum(<span style="color:#f1fa8c">&#39;ijkl,jmln,mink&#39;</span>, M, F, M) <span style="color:#ff79c6">/</span> M_max</code></pre></div>
+<p>A more traditional, and also simpler, approach to calculating a global clustering coefficient of a multilayer network is to project it onto a single weighted network.</p>
+
+<p><span  class="math">\[
+c(O_{\beta}^{\alpha})=\mathcal{M}^{-1}\frac{M_{\beta\tilde{\gamma}}^{\alpha\tilde{\gamma}}M_{\epsilon\tilde{\delta}}^{\beta\tilde{\delta}}M_{\alpha\tilde{\eta}}^{\epsilon\tilde{\eta}}}{M_{\beta\tilde{\gamma}}^{\alpha\tilde{\gamma}}F_{\epsilon\tilde{\delta}}^{\beta\tilde{\delta}}M_{\alpha\tilde{\eta}}^{\epsilon\tilde{\eta}}}\tag{3.2}
+\]</span></p>
+
+<p>where <span  class="math">\( \mathcal{M}=\max_{\alpha,\beta}\left\{M_{\beta\tilde{\gamma}}^{\alpha\tilde{\gamma}}\right\}/L \)</span>. In general, the clustering coefficient in Eq. (3.1) is different from the one in Eq. (3.2) because Eq. (3.2) discards all interlayer connections. These equations yield the same value when there is only a single layer or, more generally, when there are no interlayer edges and all of the intralayer networks are exactly the same.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">M_max <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>
+<span style="color:#ff79c6">for</span> l <span style="color:#ff79c6">in</span> <span style="color:#8be9fd;font-style:italic">range</span>(L):
+  L_i <span style="color:#ff79c6">=</span> np<span style="color:#ff79c6">.</span>einsum(<span style="color:#f1fa8c">&#39;ijkl,lk&#39;</span>, M, ct(d<span style="color:#ff79c6">=</span>l, rank<span style="color:#ff79c6">=</span>L))
+  <span style="color:#ff79c6">if</span> np<span style="color:#ff79c6">.</span>max(L_i) <span style="color:#ff79c6">&gt;</span> M_max: M_max <span style="color:#ff79c6">=</span> np<span style="color:#ff79c6">.</span>max(L_i)
+<span style="color:#6272a4"># 计算聚集系数</span>
+m <span style="color:#ff79c6">=</span> M_max <span style="color:#ff79c6">/</span> L
+c <span style="color:#ff79c6">=</span> np<span style="color:#ff79c6">.</span>einsum(<span style="color:#f1fa8c">&#39;ijkk,jmll,minn&#39;</span>, M, M, M) <span style="color:#ff79c6">/</span> np<span style="color:#ff79c6">.</span>einsum(<span style="color:#f1fa8c">&#39;ijkk,jmll,minn&#39;</span>, M, F, M) <span style="color:#ff79c6">/</span> m</code></pre></div>
+<p>The global clustering coefficient defined in Eq. (3.2) sums the contributions of three-cycles for which each step of a walk is on the same layer and those for which a walk traverses two or three layers. We decompose this clustering coefficient to separately count the contributions of three-cycles that take place on one, two, and three layers [47]. Using our tensorial framework, we modify Eq. (3.2) as follows:</p>
+
+<p><span  class="math">\[
+c(M_{\beta\tilde{\delta}}^{\alpha\tilde{\gamma}},w^{\Omega})=\frac{M_{\beta\tilde{\delta}}^{\alpha\tilde{\gamma}}M_{\gamma\tilde{\sigma}}^{\beta\tilde{\rho}}M_{\alpha\tilde{\epsilon}}^{\gamma\tilde{\eta}}\sum_{\tilde{h},\tilde{k},\tilde{l}=1}^LE_{\tilde{\gamma}}^{\tilde{\delta}}(\tilde{h}\tilde{h})E_{\tilde{\rho}}^{\tilde{\sigma}}(\tilde{k}\tilde{k})E_{\tilde{\eta}}^{\tilde{\epsilon}}(\tilde{l}\tilde{l})\delta_{\Omega}(\tilde{h},\tilde{k},\tilde{l})w^{\Omega}}{M_{\beta\tilde{\delta}}^{\alpha\tilde{\gamma}}F_{\gamma\tilde{\sigma}}^{\beta\tilde{\rho}}M_{\alpha\tilde{\epsilon}}^{\gamma\tilde{\eta}}\sum_{\tilde{h},\tilde{k},\tilde{l}=1}^LE_{\tilde{\gamma}}^{\tilde{\delta}}(\tilde{h}\tilde{h})E_{\tilde{\rho}}^{\tilde{\sigma}}(\tilde{k}\tilde{k})E_{\tilde{\eta}}^{\tilde{\epsilon}}(\tilde{l}\tilde{l})\delta_{\Omega}(\tilde{h},\tilde{k},\tilde{l})w^{\Omega}}\tag{3.3}
+\]</span></p>
+
+<p>and <span  class="math">\( w^{\Omega} \)</span> is a vector that weights the contribution of three-cycles that span <span  class="math">\( \Omega \)</span> layers, the choice <span  class="math">\( w^{\Omega}=(1/3,1/3,1/3) \)</span>, so that it takes into account that there might be some <strong>cost for crossing different layers</strong>. <span  class="math">\( \delta_{\Omega}=(\delta_1(\tilde{h},\tilde{k},\tilde{l}),\delta_2(\tilde{h},\tilde{k},\tilde{l}),\delta_3(\tilde{h},\tilde{k},\tilde{l})) \)</span> (where <span  class="math">\( \Omega=1,2,3 \)</span>) is a function that selects the cycles with <span  class="math">\( \Omega \)</span> layers:</p>
+
+<p><span  class="math">\[
+\begin{aligned}
+\delta_1(\tilde{h},\tilde{k},\tilde{l})&=\delta_{\tilde{h}\tilde{l}}\delta_{\tilde{h}\tilde{k}}\delta_{\tilde{k}\tilde{l}}\\
+\delta_2(\tilde{h},\tilde{k},\tilde{l})&=(1-\delta_{\tilde{h}\tilde{l}})\delta_{\tilde{h}\tilde{k}}+(1-\delta_{\tilde{k}\tilde{l}})\delta_{\tilde{h}\tilde{k}}+(1-\delta_{\tilde{h}\tilde{k}})\delta_{\tilde{k}\tilde{l}}\\
+\delta_3(\tilde{h},\tilde{k},\tilde{l})&=(1-\delta_{\tilde{h}\tilde{l}})(1-\delta_{\tilde{k}\tilde{l}})(1-\delta_{\tilde{h}\tilde{k}})
+\end{aligned}
+\]</span></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#6272a4"># if w = (1/3, 1/3, 1/3)</span>
+w <span style="color:#ff79c6">=</span> np<span style="color:#ff79c6">.</span>array([<span style="color:#bd93f9">1</span><span style="color:#ff79c6">/</span><span style="color:#bd93f9">3</span>, <span style="color:#bd93f9">1</span><span style="color:#ff79c6">/</span><span style="color:#bd93f9">3</span>, <span style="color:#bd93f9">1</span><span style="color:#ff79c6">/</span><span style="color:#bd93f9">3</span>])
+c1 <span style="color:#ff79c6">=</span> np<span style="color:#ff79c6">.</span>zeros((L,L,L,L,L,L))
+<span style="color:#6272a4"># 计算求和部分</span>
+<span style="color:#ff79c6">for</span> h <span style="color:#ff79c6">in</span> <span style="color:#8be9fd;font-style:italic">range</span>(L):
+  <span style="color:#ff79c6">for</span> k <span style="color:#ff79c6">in</span> <span style="color:#8be9fd;font-style:italic">range</span>(L):
+    <span style="color:#ff79c6">for</span> l <span style="color:#ff79c6">in</span> <span style="color:#8be9fd;font-style:italic">range</span>(L):
+      c1 <span style="color:#ff79c6">+=</span> np<span style="color:#ff79c6">.</span>einsum(<span style="color:#f1fa8c">&#39;ij,kl,mn-&gt;ijklmn&#39;</span>, ct(rank<span style="color:#ff79c6">=</span>L, d<span style="color:#ff79c6">=</span>h), ct(rank<span style="color:#ff79c6">=</span>L, d<span style="color:#ff79c6">=</span>k), ct(rank<span style="color:#ff79c6">=</span>L, d<span style="color:#ff79c6">=</span>l)) <span style="color:#ff79c6">*</span> np<span style="color:#ff79c6">.</span>einsum(<span style="color:#f1fa8c">&#39;i,i&#39;</span>, sc(h,k,l,num_layer<span style="color:#ff79c6">=</span>L), w)
+<span style="color:#6272a4"># 计算聚集系数</span>
+cn <span style="color:#ff79c6">=</span> np<span style="color:#ff79c6">.</span>einsum(<span style="color:#f1fa8c">&#39;ijklmn,jilknm&#39;</span>, np<span style="color:#ff79c6">.</span>einsum(<span style="color:#f1fa8c">&#39;ijkl,jomn,oipq&#39;</span>, M, M, M), c1)
+cd <span style="color:#ff79c6">=</span> np<span style="color:#ff79c6">.</span>einsum(<span style="color:#f1fa8c">&#39;ijklmn,jilknm&#39;</span>, np<span style="color:#ff79c6">.</span>einsum(<span style="color:#f1fa8c">&#39;ijkl,jomn,oipq&#39;</span>, M, F, M), c1)
+c <span style="color:#ff79c6">=</span> cn <span style="color:#ff79c6">/</span> cd</code></pre></div>
+<h2 id="4特征向量中心性eigenvector-centralities">4.特征向量中心性（Eigenvector centralities）</h2>
+
+<p>We can define a square supra-adjacency tensor in <span  class="math">\( \mathbb{R}^{NL \times NL} \)</span>, Such supramatrices correspond to unique unfoldings of corresponding fourth-order tensors. According to this unique mapping, if <span  class="math">\( \lambda_1 \)</span> is the largest eigenvalue and <span  class="math">\( V_{\alpha\tilde{\gamma}} \)</span> is the corresponding eigentensor, then it follows that</p>
+
+<p><span  class="math">\[
+M_{\beta\tilde{\delta}}^{\alpha\tilde{\gamma}}V_{\alpha\tilde{\gamma}} = \lambda_1V_{\beta\tilde{\delta}}
+\]</span></p>
+
+<p>The monoplex notion of eigencentrality grants impor- tance to a node based on its connection to other nodes. One needs to be careful about both intralayer and interlayer connections when interpreting the results of calculating a multilayer generalization of it. Moreover, by considering an overlay monoplex network or a projection monoplex network, it is possible to derive separate centrality scores for different layers.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#6272a4"># N=10, L=5</span>
+squ_matrix <span style="color:#ff79c6">=</span> np<span style="color:#ff79c6">.</span>einsum(<span style="color:#f1fa8c">&#39;ijkl-&gt;ikjl&#39;</span>, M)<span style="color:#ff79c6">.</span>reshape((<span style="color:#bd93f9">50</span>,<span style="color:#bd93f9">50</span>), order<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;F&#39;</span>)
+<span style="color:#6272a4"># in-degree</span>
+w, vr <span style="color:#ff79c6">=</span> np<span style="color:#ff79c6">.</span>linalg<span style="color:#ff79c6">.</span>eig(squ_matrix)
+<span style="color:#6272a4"># out-degree; see detail in networkx.eigenvector_centrality.[Notes]</span>
+w, vl <span style="color:#ff79c6">=</span> np<span style="color:#ff79c6">.</span>linalg<span style="color:#ff79c6">.</span>eig(squ_matrix<span style="color:#ff79c6">.</span>T)
+ec <span style="color:#ff79c6">=</span> vr[:,np<span style="color:#ff79c6">.</span>argmax(w)]<span style="color:#ff79c6">.</span>astype(np<span style="color:#ff79c6">.</span>float64)</code></pre></div>
+<h2 id="5接近中心性介数中心性和随机游走betweenness-and-closeness-centrality">5.接近中心性、介数中心性和随机游走（Betweenness and Closeness centrality）</h2>
+
+<p>一般地，接近中心性和介数中心性的计算都是基于最短路径的。但在现实中，信息不一定沿最短路径传播，而可能遵循随机游走的路径传播。参考这篇<a href="https://www.sciencedirect.com/science/article/abs/pii/S0167278916000026">文献</a>，我们将实现随机游走中心性。</p>
+
+<h3 id="random-walk-occupation-centrality">Random walk occupation centrality</h3>
+
+<p>随机游走占有率，该指标衡量在整个网络随机游走中达到稳定态时，游走达到各个顶点的概率。概率越大，该顶点越重要。</p>
+
+<p><span  class="math">\[
+T_{\beta\tilde{\delta}}^{\alpha\tilde{\gamma}}\Pi_{\alpha\tilde{\gamma}}=\lambda\Pi_{\beta\tilde{\delta}}
+\]</span></p>
+
+<p>where <span  class="math">\(T_{\beta\tilde{\delta}}^{\alpha\tilde{\gamma}}\)</span> is the tensor of transition probabilities for jumping between pairs of nodes and switching between pairs of layers. <span  class="math">\(u^{\alpha\tilde{\gamma}}=T_{\beta\tilde{\delta}}^{\alpha\tilde{\gamma}}u^{\beta\tilde{\delta}}\)</span></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">squ_matrix <span style="color:#ff79c6">=</span> np<span style="color:#ff79c6">.</span>einsum(<span style="color:#f1fa8c">&#39;ijkl-&gt;ikjl&#39;</span>, T)<span style="color:#ff79c6">.</span>reshape((<span style="color:#bd93f9">50</span>,<span style="color:#bd93f9">50</span>),order<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;F&#39;</span>)
+<span style="color:#6272a4"># in-degree</span>
+w, vr <span style="color:#ff79c6">=</span> np<span style="color:#ff79c6">.</span>linalg<span style="color:#ff79c6">.</span>eig(squ_matrix)
+<span style="color:#6272a4"># out-degree; see detail in networkx.eigenvector_centrality.[Notes]</span>
+w, vl <span style="color:#ff79c6">=</span> np<span style="color:#ff79c6">.</span>linalg<span style="color:#ff79c6">.</span>eig(squ_matrix<span style="color:#ff79c6">.</span>T)
+rwoc <span style="color:#ff79c6">=</span> vr[:,np<span style="color:#ff79c6">.</span>argmax(w)]<span style="color:#ff79c6">.</span>astype(np<span style="color:#ff79c6">.</span>float64)</code></pre></div>
+<p>the transition tensor is given by:</p>
+
+<p><span  class="math">\[
+T_{\beta\tilde{\delta}}^{\alpha\tilde{\gamma}}=M_{\rho\tilde{\sigma}}^{\alpha\tilde{\gamma}}\tilde{D}_{\beta\tilde{\delta}}^{\rho\tilde{\sigma}}
+\]</span></p>
+
+<p><span  class="math">\[
+S^{\alpha\tilde{\gamma}}=M_{\beta\tilde{\delta}}^{\alpha\tilde{\gamma}}U^{\beta\tilde{\delta}}
+\]</span></p>
+
+<blockquote>
+<p>Note that <span  class="math">\(S_{\beta\tilde{\delta}}=M_{\beta\tilde{\delta}}^{\alpha\tilde{\gamma}}U_{\alpha\tilde{\gamma}}\)</span> if M is a directed and weighted adjacency tensor, and in an undirected network <span  class="math">\(S_{\beta\tilde{\delta}}=S^{\alpha\tilde{\gamma}}\)</span></p>
+</blockquote>
+
+<p>where <span  class="math">\( \tilde{D}_{\beta\tilde{\delta}}^{\rho\tilde{\sigma}} \)</span> is the tensor whose entries are the the non-zero inverse of the strength tensor <span  class="math">\( D_{\beta\tilde{\delta}}^{\rho\tilde{\sigma}} \)</span> whose entries are all zeros, except for <span  class="math">\(\rho=\beta\)</span> and <span  class="math">\(\tilde{\sigma}=\tilde{\delta}\)</span> where the entries are given by <span  class="math">\(s^{\alpha\tilde{\gamma}}\)</span>(the strength of node <span  class="math">\(\alpha\)</span> in layer <span  class="math">\(\tilde{\gamma}\)</span>). <span  class="math">\(M_{\beta\tilde{\delta}}^{\alpha\tilde{\gamma}}\)</span> is the weighted adjacency tensor.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#6272a4"># M is a weighted adjacency tensor</span>
+S <span style="color:#ff79c6">=</span> np<span style="color:#ff79c6">.</span>einsum(<span style="color:#f1fa8c">&#39;ijkl,jl&#39;</span>, M, np<span style="color:#ff79c6">.</span>ones((<span style="color:#bd93f9">10</span>,<span style="color:#bd93f9">5</span>)))
+D_inv <span style="color:#ff79c6">=</span> np<span style="color:#ff79c6">.</span>zeros_like(M)
+<span style="color:#ff79c6">for</span> i <span style="color:#ff79c6">in</span> <span style="color:#8be9fd;font-style:italic">range</span>(<span style="color:#bd93f9">10</span>):
+    <span style="color:#ff79c6">for</span> j <span style="color:#ff79c6">in</span> <span style="color:#8be9fd;font-style:italic">range</span>(<span style="color:#bd93f9">5</span>): D_inv[i,i,j,j] <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">1</span> <span style="color:#ff79c6">/</span> S[i,j]
+T <span style="color:#ff79c6">=</span> np<span style="color:#ff79c6">.</span>einsum(<span style="color:#f1fa8c">&#39;ijkl,mink-&gt;mjnl&#39;</span>, M, D_inv)</code></pre></div>
+<blockquote>
+<p>注:这里的inverse并不是求D的逆，而是D的非0项的倒数。</p>
+</blockquote>
+
+<h3 id="betweenness-centrality">Betweenness centrality</h3>
+
+<p><strong>Definition</strong>: the random walk betweenness of a node j is defined as the amount of random walks between any pair (o, d) of nodes that pass through j. The absorbing transition tensor on a particular node d by:</p>
+
+<p><span  class="math">\[
+(T_{[d]})_{\beta\tilde{\delta}}^{\alpha\tilde{\gamma}}=\left\{
+\begin{aligned}
+0&, \beta=d\\
+T_{\beta\tilde{\delta}}^{\alpha\tilde{\gamma}}&, \text{else}
+\end{aligned}
+\right.
+\]</span></p>
+
+<p>the average number of times a random walk is given by:</p>
+
+<p><span  class="math">\[
+(\tau_{[d]})_{\beta\tilde{\delta}}^{\alpha\tilde{\gamma}}=\left[(\delta - T_{[d]})^{-1} \right]_{\beta\tilde{\delta}}^{\alpha\tilde{\gamma}}
+\]</span></p>
+
+<p>and we average over all possible starting layers:</p>
+
+<p><span  class="math">\[
+(\tau_{[d]})_{\alpha}^{\beta}=\frac{1}{L}(\tau_{[d]})_{\beta\tilde{\delta}}^{\alpha\tilde{\gamma}}u^{\tilde{\delta}}u_{\tilde{\gamma}}
+\]</span></p>
+
+<p>The overall betweenness centrality is obtained by averaging over all possible origins and destinations:</p>
+
+<p><span  class="math">\[
+\tau_{\alpha}=\frac{1}{N(N-1)}\sum_{d=1}^N(\tau_{[d]})_{\alpha}^{\beta}u_{\beta}
+\]</span></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#6272a4"># absorbing transition tensor</span>
+<span style="color:#ff79c6">def</span> <span style="color:#50fa7b">att</span>(d, T):
+  T_a <span style="color:#ff79c6">=</span> T<span style="color:#ff79c6">.</span>copy()
+  L1, L2 <span style="color:#ff79c6">=</span> T_a<span style="color:#ff79c6">.</span>shape[<span style="color:#bd93f9">2</span>:]
+  <span style="color:#ff79c6">for</span> k <span style="color:#ff79c6">in</span> <span style="color:#8be9fd;font-style:italic">range</span>(L1):
+    <span style="color:#ff79c6">for</span> l <span style="color:#ff79c6">in</span> <span style="color:#8be9fd;font-style:italic">range</span>(L2): T_a[d,:, k, l] <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">0</span>
+  <span style="color:#ff79c6">return</span> T_a
+
+<span style="color:#6272a4"># the inverse of four-order tensor</span>
+<span style="color:#ff79c6">def</span> <span style="color:#50fa7b">inv</span>(T):
+  <span style="color:#f1fa8c">&#34;&#34;&#34;
+</span><span style="color:#f1fa8c">  必须是可以转化为方阵的4阶张量，比如(10,10,5,5)---&gt;(50,50);
+</span><span style="color:#f1fa8c">  &#34;&#34;&#34;</span>
+  K, L <span style="color:#ff79c6">=</span> T<span style="color:#ff79c6">.</span>shape[<span style="color:#bd93f9">1</span>:<span style="color:#bd93f9">3</span>]
+  squ_matrix <span style="color:#ff79c6">=</span> np<span style="color:#ff79c6">.</span>einsum(<span style="color:#f1fa8c">&#39;ijkl-&gt;ikjl&#39;</span>, T)<span style="color:#ff79c6">.</span>reshape((K<span style="color:#ff79c6">*</span>L, K<span style="color:#ff79c6">*</span>L),order<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;F&#39;</span>)
+  t <span style="color:#ff79c6">=</span> np<span style="color:#ff79c6">.</span>linalg<span style="color:#ff79c6">.</span>inv(squ_matrix)
+  <span style="color:#ff79c6">return</span> np<span style="color:#ff79c6">.</span>einsum(<span style="color:#f1fa8c">&#39;ijkl-&gt;ikjl&#39;</span>, t<span style="color:#ff79c6">.</span>reshape((K,L,K,L), order<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;F&#39;</span>))
+<span style="color:#6272a4"># 顶点数N</span>
+N <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">10</span>; L <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">5</span>
+kron_delta <span style="color:#ff79c6">=</span> np<span style="color:#ff79c6">.</span>einsum(<span style="color:#f1fa8c">&#39;ij,kl&#39;</span>, np<span style="color:#ff79c6">.</span>eye(N), np<span style="color:#ff79c6">.</span>eye(L))
+rwbc <span style="color:#ff79c6">=</span> np<span style="color:#ff79c6">.</span>zeros(N)
+<span style="color:#ff79c6">for</span> i <span style="color:#ff79c6">in</span> <span style="color:#8be9fd;font-style:italic">range</span>(N):
+    rwbc <span style="color:#ff79c6">+=</span> np<span style="color:#ff79c6">.</span>einsum(<span style="color:#f1fa8c">&#39;ij,i&#39;</span>, np<span style="color:#ff79c6">.</span>einsum(<span style="color:#f1fa8c">&#39;ijkl,l,k-&gt;ij&#39;</span>, inv(kron_delta <span style="color:#ff79c6">-</span> att(i, T)), np<span style="color:#ff79c6">.</span>ones(L), np<span style="color:#ff79c6">.</span>ones(L)) <span style="color:#ff79c6">/</span> L, np<span style="color:#ff79c6">.</span>ones(N)) <span style="color:#ff79c6">/</span> (N <span style="color:#ff79c6">*</span> (N <span style="color:#ff79c6">-</span> <span style="color:#bd93f9">1</span>))</code></pre></div>
+<h3 id="closeness-centrality">Closeness centrality</h3>
+
+<p><strong>Definition</strong>: the random walk closeness centrality of a node is defined as the inverse of the average number of steps that a random walker, starting from any other node in the multilayer network, requires to reach i for the first time.</p>
+
+<p>the probability of visiting node <span  class="math">\(\beta\)</span> in layer <span  class="math">\(\tilde{\delta}\)</span>, after t time steps, considering that the walk originated in node <span  class="math">\(\alpha\)</span> in layer <span  class="math">\(\tilde{\gamma}\)</span>:</p>
+
+<p><span  class="math">\[
+P_{\beta\tilde{\delta}}^{\alpha\tilde{\gamma}}(t)=(T_{[d]}^t)_{\beta\tilde{\delta}}^{\alpha\tilde{\gamma}}
+\]</span></p>
+
+<p>The probability that the walker is absorbed in some node d at a time h equal or smaller than t:</p>
+
+<p><span  class="math">\[
+(q_{[d]})^{\alpha\tilde{\gamma}}(h \le t)=u^{\alpha\tilde{\gamma}}-(T_{[d]})_{\beta\tilde{\delta}}^{\alpha\tilde{\gamma}}u^{\beta\tilde{\delta}}
+\]</span></p>
+
+<p>the probability that the first passage time for node d is exactly t by:</p>
+
+<p><span  class="math">\[
+(q_{[d]})^{\alpha\tilde{\gamma}}(h=t)=(q_{[d]})^{\alpha\tilde{\gamma}}(h \le t)-(q_{[d]})^{\alpha\tilde{\gamma}}(h \le t-1)=\left [ (T_{[d]}^t)-(T_{[d]}^{t-1})\right ]_{\beta\tilde{\delta}}^{\alpha\tilde{\gamma}}u^{\beta\tilde{\delta}}
+\]</span></p>
+
+<p>the mean first passage time to node d:</p>
+
+<p><span  class="math">\[
+(H_{[d]})^{\alpha\tilde{\gamma}}=\sum_{t=0}^{\infty}(q_{[d]})^{\alpha\tilde{\gamma}}(h=t)=\left [ (\delta-T_{[d]})^{-1} \right ]_{\beta\tilde{\delta}}^{\alpha\tilde{\gamma}}u^{\beta\tilde{\delta}}
+\]</span></p>
+
+<p>The average mean first passage time <span  class="math">\(h_{[d]}\)</span> to node d is obtained by averaging <span  class="math">\((H_{[d]})^{\alpha\tilde{\gamma}}\)</span> over all possible starting nodes and layers as:</p>
+
+<p><span  class="math">\[
+h_{[d]}=\frac{1}{(N-1)L}u_{\alpha\tilde{\gamma}}(H_{[d]})^{\alpha\tilde{\gamma}}+\frac{1}{N}\pi_{[d]}^{-1}
+\]</span></p>
+
+<blockquote>
+<p>Note that <span  class="math">\(\pi_i=\Pi_{i\alpha}u^{\alpha}\)</span>.</p>
+</blockquote>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">N <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">10</span>; L <span style="color:#ff79c6">=</span> <span style="color:#bd93f9">5</span>
+<span style="color:#6272a4">#</span>
+squ_matrix <span style="color:#ff79c6">=</span> np<span style="color:#ff79c6">.</span>einsum(<span style="color:#f1fa8c">&#39;ijkl-&gt;ikjl&#39;</span>, M)<span style="color:#ff79c6">.</span>reshape((N,L), order<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;F&#39;</span>)
+<span style="color:#6272a4"># in-degree</span>
+w, vr <span style="color:#ff79c6">=</span> np<span style="color:#ff79c6">.</span>linalg<span style="color:#ff79c6">.</span>eig(squ_matrix)
+<span style="color:#6272a4"># out-degree; see detail in networkx.eigenvector_centrality.[Notes]</span>
+<span style="color:#6272a4"># w, vl = np.linalg.eig(squ_matrix.T)</span>
+rwoc <span style="color:#ff79c6">=</span> vr[:,np<span style="color:#ff79c6">.</span>argmax(w)]<span style="color:#ff79c6">.</span>astype(np<span style="color:#ff79c6">.</span>float64)
+<span style="color:#6272a4"># the occupation probability of node d</span>
+op <span style="color:#ff79c6">=</span> np<span style="color:#ff79c6">.</span>einsum(<span style="color:#f1fa8c">&#39;ij,j&#39;</span>, rwoc<span style="color:#ff79c6">.</span>reshape((N, L), order<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#39;F&#39;</span>), np<span style="color:#ff79c6">.</span>ones(L)) <span style="color:#6272a4">#TODO:没有验证</span>
+<span style="color:#6272a4">#</span>
+kron_delta <span style="color:#ff79c6">=</span> np<span style="color:#ff79c6">.</span>einsum(<span style="color:#f1fa8c">&#39;ij,kl&#39;</span>, np<span style="color:#ff79c6">.</span>eye(<span style="color:#bd93f9">10</span>), np<span style="color:#ff79c6">.</span>eye(<span style="color:#bd93f9">5</span>))
+<span style="color:#6272a4"># the mean first passage time to node d</span>
+rwcc <span style="color:#ff79c6">=</span> np<span style="color:#ff79c6">.</span>zeros(N)
+<span style="color:#ff79c6">for</span> i <span style="color:#ff79c6">in</span> <span style="color:#8be9fd;font-style:italic">range</span>(N):
+  rwcc[i] <span style="color:#ff79c6">=</span> (np<span style="color:#ff79c6">.</span>einsum(<span style="color:#f1fa8c">&#39;ij,ij&#39;</span>, np<span style="color:#ff79c6">.</span>ones((N,L)), np<span style="color:#ff79c6">.</span>einsum(<span style="color:#f1fa8c">&#39;ijkl,jl-&gt;ik&#39;</span>, inv(kron_delta <span style="color:#ff79c6">-</span> att(i, T)), np<span style="color:#ff79c6">.</span>ones((N,L)))) <span style="color:#ff79c6">/</span> ((N <span style="color:#ff79c6">-</span> <span style="color:#bd93f9">1</span>) <span style="color:#ff79c6">*</span> L) <span style="color:#ff79c6">+</span> op[i]<span style="color:#ff79c6">**-</span><span style="color:#bd93f9">1</span> <span style="color:#ff79c6">/</span> N)<span style="color:#ff79c6">**-</span><span style="color:#bd93f9">1</span></code></pre></div>
+<h2 id="note">------NOTE------</h2>
+
+<h3 id="pagerank算法">PageRank算法</h3>
+
+<p>最简单的PageRank算法：</p>
+
+<p><span  class="math">\[
+V_1 = MV_0
+\]</span></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">pagerank</span>(M, N, T<span style="color:#ff79c6">=</span><span style="color:#bd93f9">300</span>, tol<span style="color:#ff79c6">=</span><span style="color:#bd93f9">1e-6</span>):
+    R0 <span style="color:#ff79c6">=</span> np<span style="color:#ff79c6">.</span>ones(N) <span style="color:#ff79c6">/</span> N
+    <span style="color:#ff79c6">for</span> _ <span style="color:#ff79c6">in</span> <span style="color:#8be9fd;font-style:italic">range</span>(T):
+        R <span style="color:#ff79c6">=</span> np<span style="color:#ff79c6">.</span>dot(M, R0)
+        <span style="color:#ff79c6">if</span> np<span style="color:#ff79c6">.</span>linalg<span style="color:#ff79c6">.</span>norm(R <span style="color:#ff79c6">-</span> R0) <span style="color:#ff79c6">&lt;</span> tol: <span style="color:#ff79c6">break</span>
+        R0 <span style="color:#ff79c6">=</span> R<span style="color:#ff79c6">.</span>copy()
+    <span style="color:#ff79c6">return</span> R</code></pre></div>
+<blockquote>
+<p>M为转移矩阵，列向相加等于1，<span  class="math">\(V_0\)</span>为上网者在每一个网页的概率都是相等的,即1/n。</p>
+</blockquote>
+
+<p>上述上网者的行为是一个马尔科夫过程的实例，要满足收敛性，需要具备一个条件，即图是强连通的，即从任意网页可以到达其他任意网页。另外，有些网页不存在指向其他网页的链接，但存在指向自己的链接。为此，假设查看当前网页的概率为a，那么他从浏览器地址栏跳转的概率为(1-a)，则</p>
+
+<blockquote>
+<p>马尔可夫过程按照其状态和时间参数是否连续或者离散分为三种：1.时间和状态都离散的叫做马尔科夫链，2.时间和状态都是连续的叫做马尔科夫过程，3.时间连续，状态离散的叫做连续时间的马尔科夫链。</p>
+</blockquote>
+
+<p><span  class="math">\[
+V_1 = \alpha MV_0+\frac{(1-\alpha)}{N}u
+\]</span></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#ff79c6">def</span> <span style="color:#50fa7b">pagerank_google</span>(M, N, alpha<span style="color:#ff79c6">=</span><span style="color:#bd93f9">0.8</span>, T<span style="color:#ff79c6">=</span><span style="color:#bd93f9">300</span>, tol<span style="color:#ff79c6">=</span><span style="color:#bd93f9">1e-6</span>):
+    R0 <span style="color:#ff79c6">=</span> np<span style="color:#ff79c6">.</span>ones(N) <span style="color:#ff79c6">/</span> N
+    <span style="color:#ff79c6">for</span> _ <span style="color:#ff79c6">in</span> <span style="color:#8be9fd;font-style:italic">range</span>(T):
+        R <span style="color:#ff79c6">=</span> alpha <span style="color:#ff79c6">*</span> np<span style="color:#ff79c6">.</span>dot(M, R0) <span style="color:#ff79c6">+</span> (<span style="color:#bd93f9">1</span><span style="color:#ff79c6">-</span>alpha) <span style="color:#ff79c6">*</span> np<span style="color:#ff79c6">.</span>ones(N) <span style="color:#ff79c6">/</span> N
+        <span style="color:#ff79c6">if</span> np<span style="color:#ff79c6">.</span>linalg<span style="color:#ff79c6">.</span>norm(R <span style="color:#ff79c6">-</span> R0) <span style="color:#ff79c6">&lt;</span> tol: <span style="color:#ff79c6">break</span>
+        R0 <span style="color:#ff79c6">=</span> R<span style="color:#ff79c6">.</span>copy()
+    <span style="color:#ff79c6">return</span> R</code></pre></div>
+<p>the Page Rank centrality can be seen as the steady-state solution of the random walk master equation governed by the transition tensor,where the walker jumps to a neighbor with rate r and teleport to any other node in the network with rate 1 − r. This rank-4 tensor is given by:</p>
+
+<p><span  class="math">\[
+R_{i\beta}^{j\alpha}=rT_{i\beta}^{j\alpha}+\frac{(1-r)}{NL}u_{i\beta}^{j\alpha}
+\]</span></p>
+
+<blockquote>
+<p>Note that <span  class="math">\(NL = N \times L\)</span></p>
+</blockquote>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#6272a4"># the transition tensor. 一般r = 0.8, N为顶点数，L为层数.</span>
+R <span style="color:#ff79c6">=</span> r <span style="color:#ff79c6">*</span> T <span style="color:#ff79c6">+</span> (<span style="color:#bd93f9">1</span><span style="color:#ff79c6">-</span>r) <span style="color:#ff79c6">*</span> np<span style="color:#ff79c6">.</span>ones_like(T) <span style="color:#ff79c6">/</span> (N <span style="color:#ff79c6">*</span> L)</code></pre></div>
+<h2 id="参考">参考</h2>
+
+<blockquote>
+<ul>
+<li>知乎: <a href="https://zhuanlan.zhihu.com/p/81476207?utm_source=wechat_session">https://zhuanlan.zhihu.com/p/81476207?utm_source=wechat_session</a></li>
+<li>知乎: <a href="https://zhuanlan.zhihu.com/p/24824550">https://zhuanlan.zhihu.com/p/24824550</a></li>
+<li>CSDN: <a href="https://blog.csdn.net/gamer_gyt/article/details/47443877">https://blog.csdn.net/gamer_gyt/article/details/47443877</a></li>
+</ul>
+</blockquote>
+
+
+                
+                
+<div class="entry-shang text-center">
+    
+	    <p>「真诚赞赏，手留余香」</p>
+	
+	<button class="zs show-zs btn btn-bred">赞赏支持</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+	<div class="zs-modal-head">
+		<button type="button" class="close">×</button>
+		<span class="author"><a href="http://hehaoran.cn"><img src="/img/favicon.png" />Haoran Blog</a></span>
+        
+	        <p class="tip"><i></i><span>真诚赞赏，手留余香</span></p>
+		
+ 
+	</div>
+	<div class="zs-modal-body">
+		<div class="zs-modal-btns">
+			<button class="btn btn-blink" data-num="2">2元</button>
+			<button class="btn btn-blink" data-num="5">5元</button>
+			<button class="btn btn-blink" data-num="10">10元</button>
+			<button class="btn btn-blink" data-num="50">50元</button>
+			<button class="btn btn-blink" data-num="100">100元</button>
+			<button class="btn btn-blink" data-num="1">任意金额</button>
+		</div>
+		<div class="zs-modal-pay">
+			<button class="btn btn-bred" id="pay-text">2元</button>
+			<p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+			<img src="/img/reward/wechat-2.png"  id="pay-image"/>
+		</div>
+	</div>
+	<div class="zs-modal-footer">
+		<label><input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked"><span ><span class="zs-wechat"><img src="/img/reward/wechat-btn.png"/></span></label>
+		<label><input type="radio" name="zs-type" value="alipay" class="zs-type" class="zs-alipay"><img src="/img/reward/alipay-btn.png"/></span></label>
+	</div>
+</div>
+<script type="text/javascript" src="/js/reward.js"></script>
+
+                
+
+                <hr>
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2020/07/05/Mathematical_Formulation_Multilayer_Networks2/" data-toggle="tooltip" data-placement="top" title="多层网络的数学表示方法与实现(2)">&larr;
+                            Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2020/07/11/multilayer_networks_analysis/" data-toggle="tooltip" data-placement="top" title="多层网络分析与实现(1)">Next
+                            Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+
+                
+<div id="disqus-comment"></div>
+
+
+
+            </div>
+            
+            <div class="
+                col-lg-11 col-lg-offset-1
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/network" title="network">
+                            network
+                        </a>
+                        
+                        
+                        
+                        
+                        
+                        <a href="/tags/tensor" title="tensor">
+                            tensor
+                        </a>
+                        
+                        
+                    </div>
+                </section>
+                
+
+                
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+
+
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                   
+                   <li>
+                       <a href='' rel="alternate" type="application/rss+xml" title="Haoran Blog" >
+                           <span class="fa-stack fa-lg">
+                               <i class="fa fa-circle fa-stack-2x"></i>
+                               <i class="fa fa-rss fa-stack-1x fa-inverse"></i>
+                           </span>
+                       </a>
+                   </li>
+                   
+                    
+                    <li>
+                        <a href="mailto:hohoyinhans@gmail.com">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		    
+                    
+                    
+                    
+                    
+
+                    
+
+		    
+                    
+                    <li>
+                        <a target="_blank" href="/img/qr.png">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-wechat fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		    
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/hehaoran-ori">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+		    
+                    
+                    
+                    
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://stackoverflow.com/users/13027663">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-stack-overflow fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+            
+                    
+                    
+                    
+            
+            
+            
+                </ul>
+		<p class="copyright text-muted">
+                    Copyright &copy; Haoran Blog 2020
+                    <br>
+                    <a href="https://themes.gohugo.io/hugo-theme-cleanwhite">CleanWhite Hugo Theme</a> by <a href="https://zhaohuabing.com">Huabing</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="100px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=zhaohuabing&repo=hugo-theme-cleanwhite&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_SVG"></script>
+
+
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+
+
+
+
+
+<script>
+    
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+
+<script>
+    async("https://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+</body>
+</html>
