@@ -6,7 +6,16 @@
     <description>Recent content on Haoran Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 10 Dec 2020 00:00:00 +0000</lastBuildDate><atom:link href="https://haoranhe.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 26 Apr 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://haoranhe.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>python装饰器、描述符、自定义属性访问方式</title>
+      <link>https://haoranhe.github.io/2021/04/26/python_learning/</link>
+      <pubDate>Mon, 26 Apr 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://haoranhe.github.io/2021/04/26/python_learning/</guid>
+      <description>描述符： _get_, __set__, __delete__（比如内置的property方法，也是装饰器@property）将某个特殊类型的类的实例指派给另一个类的属性</description>
+    </item>
+    
     <item>
       <title>如何优雅地操作linux?</title>
       <link>https://haoranhe.github.io/2020/12/10/linux_note/</link>
