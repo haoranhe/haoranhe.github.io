@@ -10,8 +10,8 @@
     <meta property="og:type" content="article">
 
     
-    <meta property="og:image" content="https://haoranhe.github.io//img/home-bg-jeep.jpg">
-    <meta property="twitter:image" content="https://haoranhe.github.io//img/home-bg-jeep.jpg" />
+    <meta property="og:image" content="http://hehaoran.cn/img/home-bg-jeep.jpg">
+    <meta property="twitter:image" content="http://hehaoran.cn/img/home-bg-jeep.jpg" />
     
 
     
@@ -208,17 +208,17 @@
   <ul>
     <li>
       <ul>
-        <li><a href="#描述符">描述符：</a></li>
-        <li><a href="#property详解">@property详解</a></li>
-        <li><a href="#自定义属性访问方式">自定义属性访问方式</a></li>
-        <li><a href="#装饰器类">装饰器类</a></li>
+        <li><a href="#1-描述符">1. 描述符：</a></li>
+        <li><a href="#2-property详解">2. @property详解</a></li>
+        <li><a href="#3-自定义属性访问方式">3. 自定义属性访问方式</a></li>
+        <li><a href="#4-装饰器类">4. 装饰器类</a></li>
       </ul>
     </li>
   </ul>
 </nav>
                 
                 <!-- raw HTML omitted -->
-<h2 id="描述符">描述符：</h2>
+<h2 id="1-描述符">1. 描述符：</h2>
 <p>_<em>get</em>_, __set__, __delete__（比如内置的property方法，也是装饰器@property）将某个特殊类型的类的实例指派给另一个类的属性</p>
 <ul>
 <li>
@@ -238,7 +238,7 @@ owner: 代表类本身，即另一个类.</p>
 <blockquote>
 <p>注：<strong>del</strong> 是析构器 简单理解为del *时触发</p>
 </blockquote>
-<h2 id="property详解">@property详解</h2>
+<h2 id="2-property详解">2. @property详解</h2>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">    @property
     <span style="color:#ff79c6">def</span> <span style="color:#50fa7b">public_key</span>(self):
         <span style="color:#ff79c6">return</span> self<span style="color:#ff79c6">.</span>_public_key
@@ -253,7 +253,7 @@ owner: 代表类本身，即另一个类.</p>
 (4)最后返回这个新func函数给这个类，成为类属性。</p>
 <p>因此，那么你在get, set, del这个类属性的时候就会触发 _<em>get</em>_, __set__, __delete__.</p>
 <p><a href="https://blog.csdn.net/u012867844/article/details/83782562">https://blog.csdn.net/u012867844/article/details/83782562</a></p>
-<h2 id="自定义属性访问方式">自定义属性访问方式</h2>
+<h2 id="3-自定义属性访问方式">3. 自定义属性访问方式</h2>
 <ul>
 <li>
 <p>_<em>getattr</em>_(self, name) 定义当用户试图获取一个不存在的属性时的行为（只有不存在时才被执行）</p>
@@ -271,7 +271,7 @@ owner: 代表类本身，即另一个类.</p>
 <blockquote>
 <p>@property定义的是具体某个实例属性的行为，而__getattribute__等是定义全部实例属性的行为。如果这样的属性比较多时，需要定义一个描述符类</p>
 </blockquote>
-<h2 id="装饰器类">装饰器类</h2>
+<h2 id="4-装饰器类">4. 装饰器类</h2>
 <p>用类写装饰器于函数装饰器的不同在于，前者返回的其实是这个类装饰器的实例，而后者返回的是被装饰后的函数。因此，定义__call__方法可以将类的实例变成可调用对象，实现像函数一样的调用。</p>
 <p>在islet.utils.decorators.wrapper_send中加入以下代码</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">    <span style="color:#6272a4"># instance赋值给self.__call__的第一个参数，即func.</span>
@@ -295,7 +295,7 @@ owner: 代表类本身，即另一个类.</p>
 <div class="zs-modal-box">
 	<div class="zs-modal-head">
 		<button type="button" class="close">×</button>
-		<span class="author"><a href="https://haoranhe.github.io/"><img src="/img/favicon.png" />Haoran Blog</a></span>
+		<span class="author"><a href="http://hehaoran.cn"><img src="/img/favicon.png" />Haoran Blog</a></span>
         
 	        <p class="tip"><i></i><span>真诚赞赏，手留余香</span></p>
 		

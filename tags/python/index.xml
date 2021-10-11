@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>python on Haoran Blog</title>
-    <link>https://haoranhe.github.io/tags/python/</link>
+    <link>http://hehaoran.cn/tags/python/</link>
     <description>Recent content in python on Haoran Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 26 Apr 2021 00:00:00 +0000</lastBuildDate><atom:link href="https://haoranhe.github.io/tags/python/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 26 Apr 2021 00:00:00 +0000</lastBuildDate><atom:link href="http://hehaoran.cn/tags/python/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>python装饰器、描述符、自定义属性访问方式</title>
-      <link>https://haoranhe.github.io/2021/04/26/python_learning/</link>
+      <link>http://hehaoran.cn/2021/04/26/python_learning/</link>
       <pubDate>Mon, 26 Apr 2021 00:00:00 +0000</pubDate>
       
-      <guid>https://haoranhe.github.io/2021/04/26/python_learning/</guid>
-      <description>描述符： _get_, __set__, __delete__（比如内置的property方法，也是装饰器@property）将某个特殊类型的类的实例指派给另一个类的属性</description>
+      <guid>http://hehaoran.cn/2021/04/26/python_learning/</guid>
+      <description>1. 描述符： _get_, __set__, __delete__（比如内置的property方法，也是装饰器@property）将某个特殊类型的类的实例指派给另一个类的属</description>
     </item>
     
   </channel>
