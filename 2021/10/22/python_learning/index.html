@@ -15,15 +15,15 @@
     
 
     
-    <meta name="title" content="如何优雅地操作macOS?" />
-    <meta property="og:title" content="如何优雅地操作macOS?" />
-    <meta property="twitter:title" content="如何优雅地操作macOS?" />
+    <meta name="title" content="python语法" />
+    <meta property="og:title" content="python语法" />
+    <meta property="twitter:title" content="python语法" />
     
 
     
-    <meta name="description" content="记录mac的一些日常操作">
-    <meta property="og:description" content="记录mac的一些日常操作" />
-    <meta property="twitter:description" content="记录mac的一些日常操作" />
+    <meta name="description" content="魔法方法; 装饰器; 超类">
+    <meta property="og:description" content="魔法方法; 装饰器; 超类" />
+    <meta property="twitter:description" content="魔法方法; 装饰器; 超类" />
     
 
     
@@ -34,9 +34,9 @@
     <meta name="keyword"  content="何浩然, hehaoran, Hehaoran, , 何浩然的网络日志, 何浩然的博客, Hehaoran Blog, 博客, 个人网站, 人工智能, 金融风险管理">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>如何优雅地操作macOS?-何浩然的博客 | Hehaoran Blog</title>
+    <title>python语法-何浩然的博客 | Hehaoran Blog</title>
 
-    <link rel="canonical" href="/2020/12/08/macos_setting/">
+    <link rel="canonical" href="/2021/10/22/python_learning/">
 
     <link rel="stylesheet" href="/css/iDisqus.min.css"/>
 	
@@ -153,7 +153,7 @@
 
 <style type="text/css">
     header.intro-header {
-        background-image: url('https://img.zhaohuabing.com/in-post/istio-traffic-shifting/crossroads.png')
+        background-image: url('/img/post-bg-unix-linux.jpg')
     }
 </style>
 <header class="intro-header">
@@ -163,20 +163,20 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                        <a class="tag" href="/tags/macos" title="macos">
-                            macos
+                        <a class="tag" href="/tags/python" title="python">
+                            python
                         </a>
                         
                     </div>
-                    <h1>如何优雅地操作macOS?</h1>
-                    <h2 class="subheading">  &#34;日常积累&#34;</h2>
+                    <h1>python语法</h1>
+                    <h2 class="subheading"></h2>
                     <span class="meta">
                         Posted by 
                         
                                 &#34;hehaoran&#34;
                          
                         on 
-                        Tuesday, December 8, 2020
+                        Friday, October 22, 2021
                         
                         
                         
@@ -204,31 +204,127 @@
                 <header>
                     <h2>TOC</h2>
                 </header>
-                <nav id="TableOfContents"></nav>
+                <nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#魔法方法">魔法方法</a></li>
+        <li><a href="#装饰器类">装饰器类</a></li>
+        <li><a href="#超类与抽象基类">超类与抽象基类</a></li>
+        <li><a href="#其他">其他</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
                 
                 <!-- raw HTML omitted -->
+<h2 id="魔法方法">魔法方法</h2>
 <ol>
-<li>mac 终端变慢</li>
+<li>描述符</li>
 </ol>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sudo rm -f /private/var/log/asl/<span style="color:#f1fa8c">\*</span>.asl
-</code></pre></div><ol start="2">
-<li>如何让Finder显示隐藏文件和文件夹</li>
+<p>_<em>get</em>_, __set__, __delete__（比如内置的property方法，也是装饰器@property）将某个特殊类型的类的实例指派给另一个类的属性</p>
+<ul>
+<li>
+<p>_<em>get</em>_(self, instance, owner): 用于访问属性，返回属性的值</p>
+</li>
+<li>
+<p>_<em>set</em>_(self, instance, value): 将在属性分配操作中被调用，不返回任何内容</p>
+</li>
+<li>
+<p>_<em>delete</em>_(self, instance): 控制删除操作，不返回任何内容</p>
+</li>
+</ul>
+<p>self: 指的是被包装的函数(即这个类装饰器的实例).
+instance: 代表实例，即另一个类的self.
+owner: 代表类本身，即另一个类.</p>
+<p><a href="https://www.cnblogs.com/JohnABC/p/5685672.html">https://www.cnblogs.com/JohnABC/p/5685672.html</a></p>
+<blockquote>
+<p>注：<strong>del</strong> 是析构器 简单理解为del *时触发</p>
+</blockquote>
+<ol>
+<li>自定义属性访问方式</li>
 </ol>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#6272a4"># 显示</span>
-defaults write com.apple.finder AppleShowAllFiles -boolean <span style="color:#8be9fd;font-style:italic">true</span> ; killall Finder
-<span style="color:#6272a4"># 隐藏</span>
-defaults write com.apple.finder AppleShowAllFiles -boolean <span style="color:#8be9fd;font-style:italic">false</span> ; killall Finder
-</code></pre></div><p><a href="https://sspai.com/post/26273">https://sspai.com/post/26273</a></p>
-<ol start="3">
-<li>brew安装指定版本的软件</li>
+<ul>
+<li>
+<p>_<em>getattr</em>_(self, name) 定义当用户试图获取一个不存在的属性时的行为（只有不存在时才被执行）</p>
+</li>
+<li>
+<p>_<em>getattrbute</em>_(self, name) 定义当该类的属性被访问时的行为（先于__getattr__方法，一定会被执行）</p>
+</li>
+<li>
+<p>_<em>setattr</em>_(self, name, value) 定义当一个属性被访问时的行为</p>
+</li>
+<li>
+<p>_<em>delattr</em>_(self, name) 定义当一个属性被删除时的行为</p>
+</li>
+</ul>
+<blockquote>
+<p>@property定义的是具体某个实例属性的行为，而__getattribute__等是定义全部实例属性的行为。如果这样的属性比较多时，需要定义一个描述符类。</p>
+</blockquote>
+<p>注：_<em>getattrbute</em>_(self, name)在访问实例属性或调用实例方法时都会触发。</p>
+<h2 id="装饰器类">装饰器类</h2>
+<p>用类写装饰器与函数装饰器的不同在于，前者返回的其实是这个类装饰器的实例，而后者返回的是被装饰后的函数。因此，定义__call__方法可以将类的实例变成可调用对象，实现像函数一样的调用。</p>
+<p>在islet.utils.decorators.wrapper_send中加入以下代码</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">    <span style="color:#6272a4"># instance赋值给self.__call__的第一个参数，即func.</span>
+    <span style="color:#6272a4"># 但是后面又被赋值为被装饰的函数了。加了这句对于这个装饰器没什么影响</span>
+    <span style="color:#ff79c6">def</span> __get__(self, instance, owner):
+        <span style="color:#ff79c6">return</span> partial(self<span style="color:#ff79c6">.</span>__call__, instance)
+</code></pre></div><p><a href="https://zhuanlan.zhihu.com/p/44667584">https://zhuanlan.zhihu.com/p/44667584</a>
+<a href="https://zhuanlan.zhihu.com/p/269012332">https://zhuanlan.zhihu.com/p/269012332</a>
+<a href="https://blog.csdn.net/qq_26406447/article/details/88703492">https://blog.csdn.net/qq_26406447/article/details/88703492</a></p>
+<ol>
+<li>@property详解</li>
 </ol>
-<p><a href="https://blog.csdn.net/aa464971/article/details/84860937">https://blog.csdn.net/aa464971/article/details/84860937</a>
-<a href="https://segmentfault.com/a/1190000015346120">https://segmentfault.com/a/1190000015346120</a></p>
-<ol start="4">
-<li>删除本地git仓库</li>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">    @property
+    <span style="color:#ff79c6">def</span> <span style="color:#50fa7b">public_key</span>(self):
+        <span style="color:#ff79c6">return</span> self<span style="color:#ff79c6">.</span>_public_key
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">    <span style="color:#6272a4"># property是一个函数装饰器</span>
+    <span style="color:#ff79c6">def</span> <span style="color:#50fa7b">property</span>(func):
+        <span style="color:#ff79c6">exec</span>(func<span style="color:#ff79c6">.</span>__name__ <span style="color:#ff79c6">+</span><span style="color:#f1fa8c">&#39;=Property(func)&#39;</span>) <span style="color:#6272a4"># 在功能上exec &gt; eval</span>
+        <span style="color:#ff79c6">return</span> <span style="color:#8be9fd;font-style:italic">eval</span>(func<span style="color:#ff79c6">.</span>__name__)
+</code></pre></div><p>大概的过程是这样的：
+(1)首先将public_key函数以函数名的方式传给函数装饰器property。
+(2)再将public_key以参数的形式传给一个描述符类Property。
+(3)通过内置函数exec实例化一个Property对象，并重新赋值给func，即public_key = Property(public_key)。
+(4)最后返回这个新func函数给这个类，成为类属性。</p>
+<p>因此，那么你在get, set, del这个类属性的时候就会触发 _<em>get</em>_, __set__, __delete__.</p>
+<p><a href="https://blog.csdn.net/u012867844/article/details/83782562">https://blog.csdn.net/u012867844/article/details/83782562</a></p>
+<ol start="2">
+<li>@abstractmethod、@classmethod、@staticmethod</li>
 </ol>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">find . -name <span style="color:#f1fa8c">&#34;.git&#34;</span> | xargs rm -Rf
-</code></pre></div>
+<p>@abstractmethod为抽象方法只能用于继承，而不能直接实例化；</p>
+<h2 id="超类与抽象基类">超类与抽象基类</h2>
+<ol>
+<li>metaclass</li>
+</ol>
+<p>一般地，先定义类，然后创建实例。但是如果我们想创建出类呢？那就必须根据metaclass创建出类，所以：先定义metaclass，然后创建类。
+连接起来就是：先定义metaclass，就可以创建类，最后创建实例。
+metaclass为超类(元类)，定义为<code>实例化后的对象是类</code>(当我们需要创建一个类时)。主要用于父类对子类的修饰，类似于装饰器；</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">    <span style="color:#ff79c6">class</span> <span style="color:#50fa7b">CrypTensorMetaclass</span>(<span style="color:#8be9fd;font-style:italic">type</span>) <span style="color:#6272a4"># --&gt;超类：继承type类</span>
+    <span style="color:#ff79c6">class</span> <span style="color:#50fa7b">CrypTensorMetaclass</span>(<span style="color:#8be9fd;font-style:italic">object</span>) <span style="color:#6272a4"># --&gt;类：继承object类，object是type的一个实例;</span>
+    <span style="color:#6272a4"># python中一切都是对象，任何类都是type类的实例(type(CrypTensorMetaclass) --&gt; class &#39;type&#39;)</span>
+</code></pre></div><p>调用type对象来创建class对象：class A: pass -&gt; class =type(classname, superclasses, attributedict)</p>
+<p>参考
+<a href="https://blog.csdn.net/weixin_40009063/article/details/110774165">https://blog.csdn.net/weixin_40009063/article/details/110774165</a>
+<a href="https://www.jianshu.com/p/7454c02e86c4">https://www.jianshu.com/p/7454c02e86c4</a>
+<a href="https://www.liaoxuefeng.com/wiki/1016959663602400/1017592449371072">https://www.liaoxuefeng.com/wiki/1016959663602400/1017592449371072</a></p>
+<ol start="2">
+<li>抽象基类</li>
+</ol>
+<p>有时，我们抽象出一个基类，知道要有哪些方法，但只是抽象方法，并不实现功能，只能继承，而不能被实例化，
+但子类必须要实现该方法，这就需要用到抽象基类。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python">    <span style="color:#ff79c6">from</span> abc <span style="color:#ff79c6">import</span> ABC
+    <span style="color:#ff79c6">class</span> <span style="color:#50fa7b">MyABC</span>(ABC):
+        <span style="color:#ff79c6">pass</span>
+</code></pre></div><p>@abstractmethod
+用于程序接口的控制，正如上面的特性，含有@abstractmethod修饰的父类不能实例化，但是继承的子类必须实现@abstractmethod装饰的方法。</p>
+<h2 id="其他">其他</h2>
+<ol>
+<li>进程和线程</li>
+</ol>
+<p>进程是资源分配的最小单位，一个程序至少有一个进程。
+线程是程序执行的最小单位，一个进程至少有一个线程。</p>
+
 
                 
                 
@@ -275,9 +371,14 @@ defaults write com.apple.finder AppleShowAllFiles -boolean <span style="color:#8
                 <hr>
                 <ul class="pager">
                     
+                    <li class="previous">
+                        <a href="/2020/12/09/create_hugo_blog/" data-toggle="tooltip" data-placement="top" title="基于lnmp&#43;hugo&#43;阿里云服务器搭建静态个人博客">&larr;
+                            Previous Post</a>
+                    </li>
+                    
                     
                     <li class="next">
-                        <a href="/2020/12/09/create_hugo_blog/" data-toggle="tooltip" data-placement="top" title="利用lnmp&#43;hugo&#43;阿里云服务器搭建个人博客">Next
+                        <a href="/2021/10/22/macos_linux_setting/" data-toggle="tooltip" data-placement="top" title="macOS和linux操作">Next
                             Post &rarr;</a>
                     </li>
                     
@@ -301,8 +402,6 @@ defaults write com.apple.finder AppleShowAllFiles -boolean <span style="color:#8
                     <hr class="hidden-sm hidden-xs">
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
-                        
-                        
                         
                         
                         

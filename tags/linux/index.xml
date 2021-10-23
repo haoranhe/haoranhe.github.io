@@ -6,23 +6,23 @@
     <description>Recent content in linux on Haoran Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 10 Dec 2020 00:00:00 +0000</lastBuildDate><atom:link href="http://hehaoran.cn/tags/linux/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 22 Oct 2021 00:00:00 +0000</lastBuildDate><atom:link href="http://hehaoran.cn/tags/linux/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>如何优雅地操作linux?</title>
-      <link>http://hehaoran.cn/2020/12/10/linux_note/</link>
-      <pubDate>Thu, 10 Dec 2020 00:00:00 +0000</pubDate>
+      <title>macOS和linux操作</title>
+      <link>http://hehaoran.cn/2021/10/22/macos_linux_setting/</link>
+      <pubDate>Fri, 22 Oct 2021 00:00:00 +0000</pubDate>
       
-      <guid>http://hehaoran.cn/2020/12/10/linux_note/</guid>
-      <description>引言 记录自己日常生活中使用到的 linux 操作（也包括 macOS 系统），方便总结。 文件操作命令 如何将本地文件或文件夹上传到云服务器上？ scp -r /Users/hehaoran/myblog root@host:/home/wwwroot/hehaoran.cn/ ## 若仅仅是上传某</description>
+      <guid>http://hehaoran.cn/2021/10/22/macos_linux_setting/</guid>
+      <description>macOS mac 终端变慢 sudo rm -f /private/var/log/asl/\*.asl 如何让Finder显示隐藏文件和文件夹 # 显示 defaults write com.apple.finder AppleShowAllFiles -boolean true ; killall Finder # 隐藏 defaults write com.apple.finder AppleShowAllFiles -boolean false ; killall Finder https://sspai.com/post/26273 brew安装指定版本的软件 https://blog.csdn.net/aa464971/article/details/84860937 https://segmentfault.com/a/1190000015346120 删</description>
     </item>
     
     <item>
-      <title>如何理解栈与堆?</title>
-      <link>http://hehaoran.cn/2020/12/10/stack_heap/</link>
-      <pubDate>Thu, 10 Dec 2020 00:00:00 +0000</pubDate>
+      <title>基于lnmp&#43;hugo&#43;阿里云服务器搭建静态个人博客</title>
+      <link>http://hehaoran.cn/2020/12/09/create_hugo_blog/</link>
+      <pubDate>Wed, 09 Dec 2020 00:00:00 +0000</pubDate>
       
-      <guid>http://hehaoran.cn/2020/12/10/stack_heap/</guid>
-      <description>1. 引言 堆(Heap)与栈(Stack)一般情况下, 有两层含义: 程序内存布局场景下, 堆与栈表示的是两种内存管理方式; 数据结构场景下, 堆与栈表示</description>
+      <guid>http://hehaoran.cn/2020/12/09/create_hugo_blog/</guid>
+      <description>引言 ​LNMP 动态网站部署架构是一套由 Linux + Nginx + MySQL + PHP 组成的动态网站系统解决方案，具有免费、高效、扩展性强且资源消耗低等优良特性。博客框架常用</description>
     </item>
     
   </channel>

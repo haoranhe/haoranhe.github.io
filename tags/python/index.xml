@@ -6,14 +6,14 @@
     <description>Recent content in python on Haoran Blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 26 Apr 2021 00:00:00 +0000</lastBuildDate><atom:link href="http://hehaoran.cn/tags/python/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 22 Oct 2021 00:00:00 +0000</lastBuildDate><atom:link href="http://hehaoran.cn/tags/python/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>python装饰器、描述符、自定义属性访问方式</title>
-      <link>http://hehaoran.cn/2021/04/26/python_learning/</link>
-      <pubDate>Mon, 26 Apr 2021 00:00:00 +0000</pubDate>
+      <title>python语法</title>
+      <link>http://hehaoran.cn/2021/10/22/python_learning/</link>
+      <pubDate>Fri, 22 Oct 2021 00:00:00 +0000</pubDate>
       
-      <guid>http://hehaoran.cn/2021/04/26/python_learning/</guid>
-      <description>1. 描述符： _get_, __set__, __delete__（比如内置的property方法，也是装饰器@property）将某个特殊类型的类的实例指派给另一个类的属</description>
+      <guid>http://hehaoran.cn/2021/10/22/python_learning/</guid>
+      <description>魔法方法 描述符 _get_, __set__, __delete__（比如内置的property方法，也是装饰器@property）将某个特殊类型的类的实例指派给另一个类</description>
     </item>
     
   </channel>

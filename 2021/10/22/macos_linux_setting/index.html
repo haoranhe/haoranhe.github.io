@@ -15,15 +15,15 @@
     
 
     
-    <meta name="title" content="如何优雅地操作linux?" />
-    <meta property="og:title" content="如何优雅地操作linux?" />
-    <meta property="twitter:title" content="如何优雅地操作linux?" />
+    <meta name="title" content="macOS和linux操作" />
+    <meta property="og:title" content="macOS和linux操作" />
+    <meta property="twitter:title" content="macOS和linux操作" />
     
 
     
-    <meta name="description" content="记录linux的一些日常操作">
-    <meta property="og:description" content="记录linux的一些日常操作" />
-    <meta property="twitter:description" content="记录linux的一些日常操作" />
+    <meta name="description" content="记录mac和linux的一些日常操作">
+    <meta property="og:description" content="记录mac和linux的一些日常操作" />
+    <meta property="twitter:description" content="记录mac和linux的一些日常操作" />
     
 
     
@@ -34,9 +34,9 @@
     <meta name="keyword"  content="何浩然, hehaoran, Hehaoran, , 何浩然的网络日志, 何浩然的博客, Hehaoran Blog, 博客, 个人网站, 人工智能, 金融风险管理">
     <link rel="shortcut icon" href="/img/favicon.ico">
 
-    <title>如何优雅地操作linux?-何浩然的博客 | Hehaoran Blog</title>
+    <title>macOS和linux操作-何浩然的博客 | Hehaoran Blog</title>
 
-    <link rel="canonical" href="/2020/12/10/linux_note/">
+    <link rel="canonical" href="/2021/10/22/macos_linux_setting/">
 
     <link rel="stylesheet" href="/css/iDisqus.min.css"/>
 	
@@ -153,7 +153,7 @@
 
 <style type="text/css">
     header.intro-header {
-        background-image: url('/img/contact-bg.jpg')
+        background-image: url('/img/post-bg-coffee.jpeg')
     }
 </style>
 <header class="intro-header">
@@ -163,20 +163,24 @@
                 <div class="post-heading">
                     <div class="tags">
                         
+                        <a class="tag" href="/tags/macos" title="macos">
+                            macos
+                        </a>
+                        
                         <a class="tag" href="/tags/linux" title="linux">
                             linux
                         </a>
                         
                     </div>
-                    <h1>如何优雅地操作linux?</h1>
-                    <h2 class="subheading">  &#34;日常积累&#34;</h2>
+                    <h1>macOS和linux操作</h1>
+                    <h2 class="subheading"></h2>
                     <span class="meta">
                         Posted by 
                         
                                 &#34;hehaoran&#34;
                          
                         on 
-                        Thursday, December 10, 2020
+                        Friday, October 22, 2021
                         
                         
                         
@@ -208,8 +212,8 @@
   <ul>
     <li>
       <ul>
-        <li><a href="#引言">引言</a></li>
-        <li><a href="#文件操作命令">文件操作命令</a></li>
+        <li><a href="#macos">macOS</a></li>
+        <li><a href="#linux">Linux</a></li>
         <li><a href="#那些年我们遇到的坑">那些年我们遇到的坑</a></li>
       </ul>
     </li>
@@ -217,16 +221,43 @@
 </nav>
                 
                 <!-- raw HTML omitted -->
-<h2 id="引言">引言</h2>
-<p>记录自己日常生活中使用到的 linux 操作（也包括 macOS 系统），方便总结。</p>
-<h2 id="文件操作命令">文件操作命令</h2>
+<h2 id="macos">macOS</h2>
+<ol>
+<li>mac 终端变慢</li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">sudo rm -f /private/var/log/asl/<span style="color:#f1fa8c">\*</span>.asl
+</code></pre></div><ol start="2">
+<li>如何让Finder显示隐藏文件和文件夹</li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#6272a4"># 显示</span>
+defaults write com.apple.finder AppleShowAllFiles -boolean <span style="color:#8be9fd;font-style:italic">true</span> ; killall Finder
+<span style="color:#6272a4"># 隐藏</span>
+defaults write com.apple.finder AppleShowAllFiles -boolean <span style="color:#8be9fd;font-style:italic">false</span> ; killall Finder
+</code></pre></div><p><a href="https://sspai.com/post/26273">https://sspai.com/post/26273</a></p>
+<ol start="3">
+<li>brew安装指定版本的软件</li>
+</ol>
+<p><a href="https://blog.csdn.net/aa464971/article/details/84860937">https://blog.csdn.net/aa464971/article/details/84860937</a>
+<a href="https://segmentfault.com/a/1190000015346120">https://segmentfault.com/a/1190000015346120</a></p>
+<ol start="4">
+<li>删除本地git仓库</li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">find . -name <span style="color:#f1fa8c">&#34;.git&#34;</span> | xargs rm -Rf
+</code></pre></div><ol start="5">
+<li>全局忽略.DS_Store</li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell"><span style="color:#6272a4"># make a global .gitignore file somewhere, e.g.</span>
+<span style="color:#8be9fd;font-style:italic">echo</span> .DS_Store &gt;&gt; ~/.gitignore_global
+<span style="color:#6272a4"># Now tell git to use it for all repositories:</span>
+git config --global core.excludesfile ~/.gitignore_global
+</code></pre></div><h2 id="linux">Linux</h2>
 <ol>
 <li>如何将本地文件或文件夹上传到云服务器上？</li>
 </ol>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">scp -r /Users/hehaoran/myblog root@host:/home/wwwroot/hehaoran.cn/
 <span style="color:#6272a4">## 若仅仅是上传某一个文件，则没有-r参数</span>
 <span style="color:#6272a4">## host是你的公网ip</span>
-</code></pre></div><ol>
+</code></pre></div><ol start="2">
 <li>利用 hugo 自动生成博客网页文件</li>
 </ol>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#282a36;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-shell" data-lang="shell">hugo --theme<span style="color:#ff79c6">=</span>hugo-theme-cleanwhite --baseUrl<span style="color:#ff79c6">=</span><span style="color:#f1fa8c">&#34;http://hehaoran.cn&#34;</span>
@@ -295,15 +326,10 @@ docker cp -a ~/muxviz/data/interdependent/ muxviz:/muxViz-master/data
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2020/12/10/stack_heap/" data-toggle="tooltip" data-placement="top" title="如何理解栈与堆?">&larr;
+                        <a href="/2021/10/22/python_learning/" data-toggle="tooltip" data-placement="top" title="python语法">&larr;
                             Previous Post</a>
                     </li>
                     
-                    
-                    <li class="next">
-                        <a href="/2021/04/26/python_learning/" data-toggle="tooltip" data-placement="top" title="python装饰器、描述符、自定义属性访问方式">Next
-                            Post &rarr;</a>
-                    </li>
                     
                 </ul>
 
@@ -325,8 +351,6 @@ docker cp -a ~/muxviz/data/interdependent/ muxviz:/muxViz-master/data
                     <hr class="hidden-sm hidden-xs">
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
-                        
-                        
                         
                         
                         
