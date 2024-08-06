@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <title>利用frp实现校园网服务器穿透 // Haoran Blog</title>
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.131.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="hehaoran" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="/css/main.min.5b1fcc8902588589c4767187402a3c29f8b8d7a6fdef6d9f8f77045bb0d14fee.css" />
+    
+
+    
+  
+
+
+    
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="利用frp实现校园网服务器穿透">
+  <meta name="twitter:description" content="一、引言 在校期间可以使用ssh直接连接校内实验室中的linux服务器，但是如果暑假回家使用家庭wifi或者手机流量wifi，那么就无法使用ssh直接连接校内的服务器。本文提供一个实现校外也能访问校内服务器的方法。
+云服务器（系统为Debian 11.7 64位） frp（版本为0.54.0） 云服务器的7000、7500以及6000-7000端口（根据toml配置打开端口） 二、配置frp服务端 首先需要将frp下载到云服务器上 # 创建frp文件夹并进入该文件夹 (后面还需要将修改) # mkdir /usr &amp;&amp; cd ~/frp # 下载frp，路径与frps.service/frpc.service必须一致(推荐) cd /usr/local # 从github上下载frp # https://github.com/fatedier/frp/releases/ wget https://github.com/fatedier/frp/releases/download/v0.54.0/frp_0.54.0_linux_amd64.tar.gz # 解压并进入 tar -zxvf frp_0.54.0_linux_amd64.tar.gz cd frp_0.54.0_linux_amd64 修改frps.toml sudo vim frps.toml # https://github.com/fatedier/frp/blob/dev/conf/frps_full_example.toml # This configuration file is for reference only. Please do not use this configuration directly to run the program as it may have various issues. # A literal address or host name for IPv6 must be enclosed # in square brackets, as in &#34;[::1]:80&#34;, &#34;[ipv6-host]:http&#34; or &#34;[ipv6-host%zone]:80&#34; # For single &#34;bindAddr&#34; field, no need square brackets, like `bindAddr = &#34;::&#34;`.">
+
+    <meta property="og:url" content="https://haoranhe.github.io/post/nat_frp/">
+  <meta property="og:site_name" content="Haoran Blog">
+  <meta property="og:title" content="利用frp实现校园网服务器穿透">
+  <meta property="og:description" content="一、引言 在校期间可以使用ssh直接连接校内实验室中的linux服务器，但是如果暑假回家使用家庭wifi或者手机流量wifi，那么就无法使用ssh直接连接校内的服务器。本文提供一个实现校外也能访问校内服务器的方法。
+云服务器（系统为Debian 11.7 64位） frp（版本为0.54.0） 云服务器的7000、7500以及6000-7000端口（根据toml配置打开端口） 二、配置frp服务端 首先需要将frp下载到云服务器上 # 创建frp文件夹并进入该文件夹 (后面还需要将修改) # mkdir /usr &amp;&amp; cd ~/frp # 下载frp，路径与frps.service/frpc.service必须一致(推荐) cd /usr/local # 从github上下载frp # https://github.com/fatedier/frp/releases/ wget https://github.com/fatedier/frp/releases/download/v0.54.0/frp_0.54.0_linux_amd64.tar.gz # 解压并进入 tar -zxvf frp_0.54.0_linux_amd64.tar.gz cd frp_0.54.0_linux_amd64 修改frps.toml sudo vim frps.toml # https://github.com/fatedier/frp/blob/dev/conf/frps_full_example.toml # This configuration file is for reference only. Please do not use this configuration directly to run the program as it may have various issues. # A literal address or host name for IPv6 must be enclosed # in square brackets, as in &#34;[::1]:80&#34;, &#34;[ipv6-host]:http&#34; or &#34;[ipv6-host%zone]:80&#34; # For single &#34;bindAddr&#34; field, no need square brackets, like `bindAddr = &#34;::&#34;`.">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="post">
+    <meta property="article:published_time" content="2024-08-06T10:08:02+08:00">
+    <meta property="article:modified_time" content="2024-08-06T10:08:02+08:00">
+    <meta property="article:tag" content="Frp">
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="https://haoranhe.github.io/"><img class="app-header-avatar" src="/images/avatar.png" alt="hehaoran" /></a>
+      <span class="app-header-title">Haoran Blog</span>
+      <nav class="app-header-menu">
+          <a class="app-header-menu-item" href="/">Home</a>
+             - 
+          
+          <a class="app-header-menu-item" href="/tags/">Tags</a>
+             - 
+          
+          <a class="app-header-menu-item" href="/about/">About</a>
+      </nav>
+      <p>Hey there, I&#39;m a Ph.D. student at the School of Management, Hefei University of Technology. Currently, I&#39;m working on research in machine learning, financial technology (Fintech), information management, and credit risk management. I enjoy coding for fun.</p>
+      <div class="app-header-social">
+        
+          <a href="https://github.com/haoranhe" target="_blank" rel="noreferrer noopener me">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-github">
+  <title>Github</title>
+  <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+</svg>
+          </a>
+        
+          <a href="https://x.com/haoranhehe" target="_blank" rel="noreferrer noopener me">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-twitter">
+  <title>Twitter</title>
+  <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+</svg>
+          </a>
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">利用frp实现校园网服务器穿透</h1>
+      <div class="post-meta">
+        <div>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
+  <title>calendar</title>
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+</svg>
+          Aug 6, 2024
+        </div>
+        <div>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          4 min read
+        </div>
+        <div>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tag">
+  <title>tag</title>
+  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line>
+</svg>
+              <a class="tag" href="https://haoranhe.github.io/tags/frp/">Frp</a>
+        </div>
+      </div>
+    </header>
+    <div class="post-content">
+      <!-- raw HTML omitted -->
+<h3 id="一引言">一、引言</h3>
+<p>在校期间可以使用ssh直接连接校内实验室中的linux服务器，但是如果暑假回家使用家庭wifi或者手机流量wifi，那么就无法使用ssh直接连接校内的服务器。本文提供一个实现校外也能访问校内服务器的方法。</p>
+<ul>
+<li>云服务器（系统为Debian 11.7 64位）</li>
+<li>frp（版本为0.54.0）</li>
+<li>云服务器的7000、7500以及6000-7000端口（根据toml配置打开端口）</li>
+</ul>
+<!-- raw HTML omitted -->
+<p><img src="/images/1722566932531.jpg" alt="dashboard效果" title="dashboard效果"></p>
+<h3 id="二配置frp服务端">二、配置frp服务端</h3>
+<ol>
+<li>首先需要将frp下载到云服务器上</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># 创建frp文件夹并进入该文件夹 (后面还需要将修改)</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># mkdir /usr &amp;&amp; cd ~/frp</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 下载frp，路径与frps.service/frpc.service必须一致(推荐)</span>
+</span></span><span style="display:flex;"><span>cd /usr/local
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 从github上下载frp</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># https://github.com/fatedier/frp/releases/</span>
+</span></span><span style="display:flex;"><span>wget https://github.com/fatedier/frp/releases/download/v0.54.0/frp_0.54.0_linux_amd64.tar.gz
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 解压并进入</span>
+</span></span><span style="display:flex;"><span>tar -zxvf frp_0.54.0_linux_amd64.tar.gz
+</span></span><span style="display:flex;"><span>cd frp_0.54.0_linux_amd64
+</span></span></code></pre></div><ol start="2">
+<li>修改frps.toml</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>sudo vim frps.toml
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-toml" data-lang="toml"><span style="display:flex;"><span><span style="color:#75715e"># https://github.com/fatedier/frp/blob/dev/conf/frps_full_example.toml</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># This configuration file is for reference only. Please do not use this configuration directly to run the program as it may have various issues.</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># A literal address or host name for IPv6 must be enclosed</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># in square brackets, as in &#34;[::1]:80&#34;, &#34;[ipv6-host]:http&#34; or &#34;[ipv6-host%zone]:80&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># For single &#34;bindAddr&#34; field, no need square brackets, like `bindAddr = &#34;::&#34;`.</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">bindAddr</span> = <span style="color:#e6db74">&#34;0.0.0.0&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">bindPort</span> = <span style="color:#ae81ff">7000</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># udp port used for kcp protocol, it can be same with &#39;bindPort&#39;.</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># if not set, kcp is disabled in frps.</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">kcpBindPort</span> = <span style="color:#ae81ff">7000</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Configure the web server to enable the dashboard for frps.</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># dashboard is available only if webServer.port is set.</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">webServer</span>.<span style="color:#a6e22e">addr</span> = <span style="color:#e6db74">&#34;0.0.0.0&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">webServer</span>.<span style="color:#a6e22e">port</span> = <span style="color:#ae81ff">7500</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">webServer</span>.<span style="color:#a6e22e">user</span> = <span style="color:#e6db74">&#34;admin&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">webServer</span>.<span style="color:#a6e22e">password</span> = <span style="color:#e6db74">&#34;admin&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># auth.method specifies what authentication method to use authenticate frpc with frps.</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># If &#34;token&#34; is specified - token will be read into login message.</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># If &#34;oidc&#34; is specified - OIDC (Open ID Connect) token will be issued using OIDC settings. By default, this value is &#34;token&#34;.</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">auth</span>.<span style="color:#a6e22e">method</span> = <span style="color:#e6db74">&#34;token&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># auth.additionalScopes specifies additional scopes to include authentication information.</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Optional values are HeartBeats, NewWorkConns.</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># auth.additionalScopes = [&#34;HeartBeats&#34;, &#34;NewWorkConns&#34;]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># auth token</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">auth</span>.<span style="color:#a6e22e">token</span> = <span style="color:#e6db74">&#34;12345678&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Only allow frpc to bind ports you list. By default, there won&#39;t be any limit.</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">allowPorts</span> = [
+</span></span><span style="display:flex;"><span>  { <span style="color:#a6e22e">start</span> = <span style="color:#ae81ff">6000</span>, <span style="color:#a6e22e">end</span> = <span style="color:#ae81ff">7000</span> },
+</span></span><span style="display:flex;"><span>]
+</span></span></code></pre></div><ol start="3">
+<li>创建frps.service，使其随服务器自启动</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>sudo vim /etc/systemd/system/frps.service
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-service" data-lang="service"><span style="display:flex;"><span><span style="color:#66d9ef">[Unit]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">Description </span><span style="color:#f92672">=</span><span style="color:#e6db74"> frp server</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">After </span><span style="color:#f92672">=</span><span style="color:#e6db74"> network.target</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">Wants </span><span style="color:#f92672">=</span><span style="color:#e6db74"> network.target</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">[Service]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">Type </span><span style="color:#f92672">=</span><span style="color:#e6db74"> simple</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">ExecStart </span><span style="color:#f92672">=</span><span style="color:#e6db74"> /usr/local/frp_0.54.0_linux_amd64/frps -c /usr/local/frp_0.54.0_linux_amd64/frps.toml</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">ExecStop</span><span style="color:#f92672">=</span><span style="color:#e6db74">/bin/kill $MAINPID</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">Restart</span><span style="color:#f92672">=</span><span style="color:#e6db74">always</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">RestartSec</span><span style="color:#f92672">=</span><span style="color:#e6db74">5</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">[Install]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">WantedBy </span><span style="color:#f92672">=</span><span style="color:#e6db74"> multi-user.target</span>
+</span></span></code></pre></div><ol start="4">
+<li>重载服务</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>sudo systemctl daemon-reload
+</span></span></code></pre></div><ol start="5">
+<li>启动frps.service</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>sudo systemctl start frps.service
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># sudo systemctl stop frps.service // 停止服务</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># sudo systemctl status frps.service //查看是否成功</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># sudo systemctl restart frps.service // 修改任何配置后重启服务</span>
+</span></span><span style="display:flex;"><span>sudo systemctl enable frps.service <span style="color:#75715e"># 可选（后果未知）</span>
+</span></span></code></pre></div><ol start="6">
+<li>本地查看dashboard是否正常启动(地址为：云服务器公网ip:端口)</li>
+</ol>
+<pre tabindex="0"><code class="language-chrome" data-lang="chrome">x.x.x.x:7500
+</code></pre><h3 id="三配置frp客户端">三、配置frp客户端</h3>
+<ol>
+<li>将frp下载到校内服务器上（步骤跟上面一样）</li>
+<li>修改frpc.toml</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># serverAddr为云服务器公网ip。</span>
+</span></span><span style="display:flex;"><span>sudo vim frpc.toml
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-toml" data-lang="toml"><span style="display:flex;"><span><span style="color:#75715e"># https://github.com/fatedier/frp/blob/dev/conf/frpc_full_example.toml</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># your proxy name will be changed to {user}.{proxy}</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">user</span> = <span style="color:#e6db74">&#34;your_name&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># user = &#34;ubuntu10.200.64.32&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># A literal address or host name for IPv6 must be enclosed</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># in square brackets, as in &#34;[::1]:80&#34;, &#34;[ipv6-host]:http&#34; or &#34;[ipv6-host%zone]:80&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># For single serverAddr field, no need square brackets, like serverAddr = &#34;::&#34;.</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">serverAddr</span> = <span style="color:#e6db74">&#34;x.x.x.x&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">serverPort</span> = <span style="color:#ae81ff">7000</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Decide if exit program when first login failed, otherwise continuous relogin to frps</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># default is true</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">loginFailExit</span> = <span style="color:#66d9ef">true</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># console or real logFile path like ./frpc.log</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">to</span> = <span style="color:#e6db74">&#34;./frpc.log&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># trace, debug, info, warn, error</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">level</span> = <span style="color:#e6db74">&#34;info&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">log</span>.<span style="color:#a6e22e">maxDays</span> = <span style="color:#ae81ff">3</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">auth</span>.<span style="color:#a6e22e">method</span> = <span style="color:#e6db74">&#34;token&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># auth.additionalScopes specifies additional scopes to include authentication information.</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Optional values are HeartBeats, NewWorkConns.</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># auth.additionalScopes = [&#34;HeartBeats&#34;, &#34;NewWorkConns&#34;]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># auth token</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">auth</span>.<span style="color:#a6e22e">token</span> = <span style="color:#e6db74">&#34;12345678&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>[[<span style="color:#a6e22e">proxies</span>]]
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># &#39;ssh&#39; is the unique proxy name</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># If global user is not empty, it will be changed to {user}.{proxy} such as &#39;your_name.ssh&#39;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">name</span> = <span style="color:#e6db74">&#34;ssh&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">type</span> = <span style="color:#e6db74">&#34;tcp&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">localIP</span> = <span style="color:#e6db74">&#34;127.0.0.1&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">localPort</span> = <span style="color:#ae81ff">22</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">remotePort</span> = <span style="color:#ae81ff">6000</span>
+</span></span></code></pre></div><p>3.创建frpc.service，使其随服务器自启动</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>sudo vim /etc/systemd/system/frpc.service
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-service" data-lang="service"><span style="display:flex;"><span><span style="color:#66d9ef">[Unit]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">Description </span><span style="color:#f92672">=</span><span style="color:#e6db74"> frp client</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">After </span><span style="color:#f92672">=</span><span style="color:#e6db74"> network.target</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">Wants </span><span style="color:#f92672">=</span><span style="color:#e6db74"> network.target</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">[Service]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">Type </span><span style="color:#f92672">=</span><span style="color:#e6db74"> simple</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">ExecStart </span><span style="color:#f92672">=</span><span style="color:#e6db74"> /usr/local/frp_0.54.0_linux_amd64/frpc -c /usr/local/frp_0.54.0_linux_amd64/frpc.toml</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e">#</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">ExecStop</span><span style="color:#f92672">=</span><span style="color:#e6db74">/bin/kill $MAINPID</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">Restart</span><span style="color:#f92672">=</span><span style="color:#e6db74">always</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">RestartSec</span><span style="color:#f92672">=</span><span style="color:#e6db74">5</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">[Install]</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">WantedBy </span><span style="color:#f92672">=</span><span style="color:#e6db74"> multi-user.target</span>
+</span></span></code></pre></div><ol start="4">
+<li>重载服务</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>sudo systemctl daemon-reload
+</span></span></code></pre></div><ol start="5">
+<li>启动frpc.service</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>sudo systemctl start frpc.service
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># sudo systemctl stop frpc.service // 停止服务</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># sudo systemctl status frpc.service //查看是否成功</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># sudo systemctl restart frpc.service // 修改任何配置后重启服务</span>
+</span></span><span style="display:flex;"><span>sudo systemctl enable frpc.service <span style="color:#75715e"># 可选（后果未知）</span>
+</span></span></code></pre></div><p>四、测试是否成功</p>
+<ol>
+<li>在非校内网环境中，利用ssh连接校内服务器</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># x.x.x.x为云服务器公网ip，</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># roshan为校内网主机的用户名！而且不能为root。</span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># 密码是校内服务器的roshan用户登陆密码</span>
+</span></span><span style="display:flex;"><span>ssh ssh -oPort<span style="color:#f92672">=</span><span style="color:#ae81ff">6000</span> roshan@x.x.x.x
+</span></span></code></pre></div><ol start="2">
+<li>免密登陆（可选）</li>
+</ol>
+<p>如果想避免每次输入密码（校内服务器的用户登陆密码），可以添加密钥实现免密连接。首先在本地生成密钥对（若本地已经存在可以省略这一步）。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># -b 4096 表示生成的 rsa 秘钥对的长度是 4096 个 bit（可选参数）</span>
+</span></span><span style="display:flex;"><span>ssh-keygen -t rsa -b <span style="color:#ae81ff">4096</span>
+</span></span></code></pre></div><p>然后，将本地的公钥上传到校内网服务器上，主要有两种方式：</p>
+<ul>
+<li>自动添加：</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e">#在校内网环境下，x.x.x.x为校内服务器的内网ip</span>
+</span></span><span style="display:flex;"><span>ssh-copy-id roshan@x.x.x.x
+</span></span></code></pre></div><ul>
+<li>手动添加：</li>
+</ul>
+<p>将本地刚生成的公钥文件中的内容添加到/root/.ssh/authorized_keys，再修改配置文件/etc/ssh/sshd_config，并将PubkeyAuthentication配置为yes，从而允许使用基于密钥认证的方式登录。</p>
+<p>五、连接vscode remote（可选）</p>
+<ol>
+<li>在config文件中添加如下内容（x.x.x.x为云服务器公网ip）</li>
+</ol>
+<pre tabindex="0"><code class="language-config" data-lang="config">Host x.x.x.x
+  HostName x.x.x.x
+  User roshan
+  Port 6000
+</code></pre><p>六、服务器命令行登陆校园网（番外篇）</p>
+<ol>
+<li>查看校园网登录页面源码，获取要提交的字段名称</li>
+<li>基本命令如下</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span><span style="color:#75715e"># ip，student_id，password替换成相应值</span>
+</span></span><span style="display:flex;"><span>curl <span style="color:#e6db74">&#39;http://172.16.200.12&#39;</span> -d <span style="color:#e6db74">&#34;DDDDD=student_id&amp;upass=password&amp;0MKKey=&#34;</span>
+</span></span></code></pre></div><ol start="3">
+<li>测试是否成功</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>ping wwww.baidu.com
+</span></span></code></pre></div><p>若出现错误“name or service not know”，在resolv.conf文件中添加如下两行内容，分别是首选DNS服务器和备选DNS服务器。</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>sudo vim /etc/resolv.conf
+</span></span></code></pre></div><pre tabindex="0"><code class="language-conf" data-lang="conf">nameserver 8.8.8.8
+nameserver 114.114.114.114
+</code></pre><ol start="4">
+<li>查看注销后页面的url（未测试）</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-shell" data-lang="shell"><span style="display:flex;"><span>curl <span style="color:#e6db74">&#39;http://172.16.200.12/F.htm&#39;</span>
+</span></span></code></pre></div><h2 id="参考">参考</h2>
+<ul>
+<li>github: <a href="https://github.com/fatedier/frp/issues/944">https://github.com/fatedier/frp/issues/944</a></li>
+<li>frp文档: <a href="https://gofrp.org/zh-cn/docs/">https://gofrp.org/zh-cn/docs/</a></li>
+<li>frp项目地址: <a href="https://github.com/fatedier/frp">https://github.com/fatedier/frp</a></li>
+</ul>
+
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>

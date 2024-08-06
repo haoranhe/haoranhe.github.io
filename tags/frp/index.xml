@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Frp on Haoran Blog</title>
+    <link>https://haoranhe.github.io/tags/frp/</link>
+    <description>Recent content in Frp on Haoran Blog</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Tue, 06 Aug 2024 10:08:02 +0800</lastBuildDate>
+    <atom:link href="https://haoranhe.github.io/tags/frp/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>利用frp实现校园网服务器穿透</title>
+      <link>https://haoranhe.github.io/post/nat_frp/</link>
+      <pubDate>Tue, 06 Aug 2024 10:08:02 +0800</pubDate>
+      <guid>https://haoranhe.github.io/post/nat_frp/</guid>
+      <description>一、引言 在校期间可以使用ssh直接连接校内实验室中的linux服务器，但是如果暑假回家使用家庭wifi或者手机流量wifi，那么就无法使用ssh直接连接校内的服务器。本文提供一个实现校外也能访问校内服务器的方法。&#xA;云服务器（系统为Debian 11.7 64位） frp（版本为0.54.0） 云服务器的7000、7500以及6000-7000端口（根据toml配置打开端口） 二、配置frp服务端 首先需要将frp下载到云服务器上 # 创建frp文件夹并进入该文件夹 (后面还需要将修改) # mkdir /usr &amp;amp;&amp;amp; cd ~/frp # 下载frp，路径与frps.service/frpc.service必须一致(推荐) cd /usr/local # 从github上下载frp # https://github.com/fatedier/frp/releases/ wget https://github.com/fatedier/frp/releases/download/v0.54.0/frp_0.54.0_linux_amd64.tar.gz # 解压并进入 tar -zxvf frp_0.54.0_linux_amd64.tar.gz cd frp_0.54.0_linux_amd64 修改frps.toml sudo vim frps.toml # https://github.com/fatedier/frp/blob/dev/conf/frps_full_example.toml # This configuration file is for reference only. Please do not use this configuration directly to run the program as it may have various issues. # A literal address or host name for IPv6 must be enclosed # in square brackets, as in &amp;#34;[::1]:80&amp;#34;, &amp;#34;[ipv6-host]:http&amp;#34; or &amp;#34;[ipv6-host%zone]:80&amp;#34; # For single &amp;#34;bindAddr&amp;#34; field, no need square brackets, like `bindAddr = &amp;#34;::&amp;#34;`.</description>
+    </item>
+  </channel>
+</rss>
